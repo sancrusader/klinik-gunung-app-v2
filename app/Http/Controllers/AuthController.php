@@ -119,7 +119,7 @@ class AuthController extends Controller
                 case 'pendaki':
                     return redirect()->route('pendaki.welcome');
                 default:
-                    return redirect()->route('home');
+                    return redirect()->route('/');
             }
         }
 

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\KasirController;
+use App\Http\Controllers\KoordinatorPenyelamatController;
+use App\Http\Controllers\ManajerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -10,7 +13,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ParamedisController;
 use App\Http\Controllers\ScreeningController;
 use App\Http\Controllers\ConsultationController;
-use App\Http\Controllers\NotificationController;
 
 
 // Page
@@ -128,6 +130,19 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/paramedis/health-check/{id}', [ParamedisController::class, 'processHealthCheck'])->name('paramedis.process');
         Route::get('/paramedis/data', [ParamedisController::class, 'dashboard'])->name('paramedis.data');
     });
+
+    Route::middleware(['role:koordinator'])->group(function () {
+        Route::get('/koordinator/dashboard', [KoordinatorPenyelamatController::class, 'index'])->name('koordinator.welcome');
+    });
+
+    Route::middleware(['role:manajer'])->group(function () {
+        Route::get('/manajer/dashboard', [ManajerController::class, 'index'])->name('manajer.welcome');
+    });
+
+    Route::middleware(['role:kasir'])->group(function () {
+        Route::get('/kasir/dashboard', [KasirController::class, 'index'])->name('kasir.welcome');
+    });
+
 
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');

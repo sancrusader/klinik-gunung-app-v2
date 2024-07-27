@@ -1,74 +1,3 @@
-{{-- <nav class="fixed top-2 z-30 w-full md:top-6">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">
-        <div
-            class="relative flex h-14 items-center justify-between gap-3 rounded-2xl bg-white/90 px-3 shadow-lg shadow-black/[0.03] backdrop-blur-sm before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent before:[background:linear-gradient(theme(colors.gray.100),theme(colors.gray.200))_border-box] before:[mask-composite:exclude_!important] before:[mask:linear-gradient(white_0_0)_padding-box,_linear-gradient(white_0_0)]">
-            <div class="flex items-center">
-                <a href="/" class="inline-flex">
-                    <img src="{{ asset('assets/logo/kg.png') }}" width="50" height="50" alt="Logo Klinik Gunung" />
-                </a>
-            </div>
-            <button id="menu-toggle" class="block md:hidden text-gray-800 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
-                    </path>
-                </svg>
-            </button>
-            <ul id="nav-menu" class="hidden md:flex flex-1 items-center justify-end gap-3">
-                <li>
-                    <a href="{{ route('about') }}" class="text-gray-800">About Us</a>
-                </li>
-                <li>
-                    <a href="/our-service" class="text-gray-800">Our Service</a>
-                </li>
-                <li>
-                    <a href="/our-product" class="text-gray-800">Our Product</a>
-                </li>
-                <li>
-                    <a href="/blog" class="text-gray-800">Blog</a>
-                </li>
-                <li>
-                    <a href="/contact-us" class="text-gray-800">Contact Us</a>
-                </li>
-                @if (Request::is('login'))
-                @else
-                    <li>
-                        <a href="{{ route('login') }}" class="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50">Login</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('register') }}" class="btn-sm bg-gray-800 text-gray-200 shadow hover:bg-gray-900">Signup</a>
-                    </li>
-                @endif
-            </ul>
-        </div>
-        <ul id="dropdown-menu" class="hidden md:hidden flex flex-col gap-3 mt-4 bg-white rounded-xl shadow-lg p-4">
-            <li>
-                <a href="/about-us" class="text-gray-800">About Us</a>
-            </li>
-            <li>
-                <a href="/our-service" class="text-gray-800">Our Service</a>
-            </li>
-            <li>
-                <a href="/our-product" class="text-gray-800">Our Product</a>
-            </li>
-            <li>
-                <a href="/blog" class="text-gray-800">Blog</a>
-            </li>
-            <li>
-                <a href="/contact-us" class="text-gray-800">Contact Us</a>
-            </li>
-            @if (Request::is('login'))
-            @else
-                <li>
-                    <a href="{{ route('login') }}" class="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50">Login</a>
-                </li>
-                <li>
-                    <a href="{{ route('register') }}" class="btn-sm bg-gray-800 text-gray-200 shadow hover:bg-gray-900">Signup</a>
-                </li>
-            @endif
-        </ul>
-    </div>
-</nav> --}}
 <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
     <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
         <a href="/" class="flex items-center">
@@ -135,7 +64,7 @@
                                         $dashboardRoute = 'pendaki.welcome';
                                         break;
                                     default:
-                                        $dashboardRoute = 'home';
+                                        $dashboardRoute = '/';
                                         break;
                                 }
                             @endphp

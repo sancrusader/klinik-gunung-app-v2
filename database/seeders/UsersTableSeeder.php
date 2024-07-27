@@ -46,7 +46,7 @@ class UsersTableSeeder extends Seeder
                 'name' => 'Koordinator Penyelamat User',
                 'email' => 'koordinator@example.com',
                 'password' => Hash::make('password'),
-                'role' => 'koordinatorPenyelamat',
+                'role' => 'koordinator',
             ],
             [
                 'name' => 'Pendaki User',
