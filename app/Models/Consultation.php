@@ -9,12 +9,7 @@ class Consultation extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'hiker_id',
-        'doctor_id',
-        'message',
-        'status',
-    ];
+    protected $fillable = ['hiker_id', 'doctor_id', 'schedule_id', 'question', 'answer'];
 
     public function hiker()
     {
@@ -24,5 +19,10 @@ class Consultation extends Model
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class, 'schedule_id');
     }
 }

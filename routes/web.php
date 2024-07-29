@@ -116,12 +116,22 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
         Route::get('/screenings/{id}/payment', [ScreeningController::class, 'payment'])->name('screenings.payment');
         Route::post('/payment-callback', [ScreeningController::class, 'paymentCallback'])->name('payment.callback');
+        // Rute untuk menampilkan jadwal yang belum memiliki konsultasi
+        Route::get('pendaki/consultasi-schedule', [ConsultationController::class, 'createSchedule'])->name('pendaki.create_schedule');
+
     });
 
     Route::middleware(['role:dokter'])->group(function () {
         Route::get('/dokter/dashboard', [DokterController::class, 'index'])->name('dokter.welcome');
         Route::get('/dokter/consultasi', [ConsultationController::class, 'doctorIndex'])->name('dokter.consultasi.index');
         Route::post('/dokter/consultasi/{consultation}/complete', [ConsultationController::class, 'complete'])->name('dokter.consultasi.complete');
+
+        // Rute untuk menampilkan jadwal konsultasi dokter
+        Route::get('dokter/jadwal', [ConsultationController::class, 'doctorSchedule'])->name('dokter.schedule');
+        // Rute untuk menyelesaikan konsultasi
+        Route::patch('dokter/consultations/{consultation}/complete', [ConsultationController::class, 'ScheduleComplete'])->name('dokter.complete');
+
+
     });
 
     Route::middleware(['role:paramedis'])->group(function () {

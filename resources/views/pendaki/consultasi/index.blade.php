@@ -452,5 +452,55 @@
 
         </main>
 
-    </div>s
+    </div>
 </x-dashboard-layout>
+{{-- <x-dashboard.dashboard-layout>
+
+    <div class="container">
+        <h1>Jadwal Konsultasi</h1>
+
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <form action="{{ route('pendaki.consultasi.store') }}" method="POST">
+            @csrf
+
+            <div class="form-group">
+                <label for="doctor_id">Dokter</label>
+                <select name="doctor_id" id="doctor_id" class="form-control" required>
+                    @foreach ($doctors as $doctor)
+                        <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="schedule_id">Jadwal</label>
+                <select name="schedule_id" id="schedule_id" class="form-control" required>
+                    @foreach ($schedules as $schedule)
+                        <option value="{{ $schedule->id }}">{{ $schedule->date }} - {{ $schedule->start_time }} s/d
+                            {{ $schedule->end_time }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="question">Pertanyaan</label>
+                <textarea name="question" id="question" class="form-control" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Buat Jadwal</button>
+        </form>
+
+        <h2>Konsultasi Saya</h2>
+        <ul>
+            @foreach ($consultations as $consultation)
+                <li>{{ $consultation->question }} - {{ $consultation->doctor->name }} -
+                    {{ $consultation->schedule->date }}</li>
+            @endforeach
+        </ul>
+    </div>
+</x-dashboard.dashboard-layout> --}}
