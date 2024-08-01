@@ -25,5 +25,18 @@
 
 ## User
 
--   sandikrxyzn@gmail.com
-    v+@$bC$#+x.XY@]
+```
+sandikrxyzn@gmail.com
+v+@$bC$#+x.XY@]
+```
+
+```
+Email: dokter@example.com
+       kasir@example.com
+       paramedis@example.com
+       admin@example.com
+       manajer@example.com
+       koordinator@example.com
+
+Password: password
+```
