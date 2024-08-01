@@ -17,10 +17,8 @@
             <th>Email</th>
             <th>Question 1</th>
             <th>Question 2</th>
-            <th>Question 3</th>
-            <th>Additional Notes</th>
             <th>Status</th>
-            <th>Queue Number</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -34,12 +32,21 @@
                 <td>{{ $scan->address }}</td>
                 <td>{{ $scan->phone }}</td>
                 <td>{{ $scan->email }}</td>
-                <td>{{ $scan->question1 }}</td>
-                <td>{{ $scan->question2 }}</td>
-                <td>{{ $scan->question3 }}</td>
-                <td>{{ $scan->additional_notes }}</td>
+                <td>{{ $scan->question_1 }}</td>
+                <td>{{ $scan->question_2 }}</td>
                 <td>{{ $scan->status }}</td>
-                <td>{{ $scan->queue_number }}</td>
+                <td>
+                    <form action="{{ route('paramedis.processHealthCheck', $scan->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="health_status" value="sehat">
+                        <button type="submit">Sehat</button>
+                    </form>
+                    <form action="{{ route('paramedis.processHealthCheck', $scan->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="health_status" value="tidak sehat">
+                        <button type="submit">Tidak Sehat</button>
+                    </form>
+                </td>
             </tr>
         @endforeach
     </tbody>

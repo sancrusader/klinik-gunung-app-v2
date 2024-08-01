@@ -1,15 +1,15 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Screening;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\QrCodeMail;
+use PDF;
 
 class ScreeningController extends Controller
 {
@@ -17,8 +17,6 @@ class ScreeningController extends Controller
     {
         $userId = Auth::id();
         $screenings = Screening::where('user_id', $userId)->paginate(10);
-
-        // Kirim data ke view
         return view('screenings.index', compact('screenings'));
     }
 
@@ -44,7 +42,6 @@ class ScreeningController extends Controller
             'additional_notes' => 'nullable|string',
         ]);
 
-        // Create screening record
         $screening = Screening::create([
             'user_id' => Auth::id(),
             'full_name' => $request->full_name,
@@ -60,7 +57,7 @@ class ScreeningController extends Controller
             'question3' => $request->question3,
             'additional_notes' => $request->additional_notes,
             'status' => 'pending',
-            'queue_number' => $this->generateQueueNumber(), // Implementasikan metode untuk menghasilkan nomor antrian
+            'queue_number' => $this->generateQueueNumber(),
         ]);
 
         return redirect()->route('screenings.payment', $screening->id);
@@ -77,12 +74,69 @@ class ScreeningController extends Controller
         $screeningId = $request->input('screening_id');
         $screening = Screening::findOrFail($screeningId);
 
-        // Update payment status
-        $screening->payment_status = 'paid';
+        $screening->payment_status = true;
         $screening->save();
 
-        // Generate QR code data
-        $qrCodeData = json_encode([
+        $qrCodeData = json_encode($screening->toArray());
+
+        $qrCodeImage = QrCode::format('png')->size(200)->generate($qrCodeData);
+
+        $path = storage_path('app/public/qrcodes/');
+        $filename = 'qrcode_' . $screening->id . '.png';
+
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        file_put_contents($path . $filename, $qrCodeImage);
+
+        $qrCodeUrl = asset('storage/qrcodes/' . $filename);
+
+        $screening->qr_code_url = $qrCodeUrl;
+        $screening->save();
+
+        Mail::to($screening->email)->send(new QrCodeMail($screening, $qrCodeUrl));
+
+        return redirect()->route('screenings.index')->with('success', 'Pembayaran berhasil, QR code telah dikirim.');
+    }
+
+    public function confirmPayment($id)
+    {
+        $screening = Screening::findOrFail($id);
+
+        if ($screening->payment_status) {
+            $screening->payment_confirmed = true;
+            $screening->save();
+
+            $certificatePath = $this->generateCertificate($screening);
+
+            $screening->certificate_path = $certificatePath;
+            $screening->certificate_issued = true;
+            $screening->save();
+
+            return redirect()->route('kasir.index')->with('success', 'Pembayaran berhasil dikonfirmasi dan sertifikat telah dibuat.');
+        }
+
+        return redirect()->route('kasir.index')->with('error', 'Pembayaran belum dilakukan.');
+    }
+
+    public function kasirDashboard()
+    {
+        $screenings = Screening::where('payment_status', true)
+            ->where('payment_confirmed', false)
+            ->paginate(10);
+
+        return view('kasir.dashboard', compact('screenings'));
+    }
+
+    private function generateQueueNumber()
+    {
+        return Screening::max('queue_number') + 1;
+    }
+
+    private function generateCertificate($screening)
+    {
+        $data = [
             'full_name' => $screening->full_name,
             'date_of_birth' => $screening->date_of_birth,
             'mountain' => $screening->mountain,
@@ -91,44 +145,20 @@ class ScreeningController extends Controller
             'address' => $screening->address,
             'phone' => $screening->phone,
             'email' => $screening->email,
-            'question1' => $screening->question1,
-            'question2' => $screening->question2,
-            'question3' => $screening->question3,
-            'additional_notes' => $screening->additional_notes,
-            'status' => $screening->status,
-            'queue_number' => $screening->queue_number,
-        ]);
+            'date' => now()->format('Y-m-d')
+        ];
 
-        // Generate QR code image
-        $qrCodeImage = QrCode::format('png')->size(200)->generate($qrCodeData);
+        $pdf = PDF::loadView('certificates.certificate', $data);
 
-        // Define path to save QR code
-        $path = storage_path('app/public/qrcodes/');
-        $filename = 'qrcode_' . $screening->id . '.png';
+        $path = 'certificates/';
+        $filename = 'certificate_' . $screening->id . '.pdf';
 
-        // Ensure the directory exists
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
+        if (!Storage::exists($path)) {
+            Storage::makeDirectory($path);
         }
 
-        // Save QR code image to file
-        file_put_contents($path . $filename, $qrCodeImage);
+        Storage::put($path . $filename, $pdf->output());
 
-        // Get URL for the QR code image
-        $qrCodeUrl = asset('storage/qrcodes/' . $filename);
-
-        // Update screening record with QR code URL
-        $screening->qr_code_url = $qrCodeUrl;
-        $screening->save();
-
-        // Send QR code via email
-        Mail::to($screening->email)->send(new QrCodeMail($screening, $qrCodeUrl));
-
-        return redirect()->route('screenings.index')->with('success', 'Pembayaran berhasil, QR code telah dikirim.');
-    }
-
-    private function generateQueueNumber()
-    {
-        return Screening::max('queue_number') + 1;
+        return $path . $filename;
     }
 }

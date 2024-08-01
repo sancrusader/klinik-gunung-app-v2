@@ -1,16 +1,18 @@
-<!-- resources/views/kasir/dashboard.blade.php -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Kasir Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Payment</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 
 <body>
-    <h1>Kasir Dashboard</h1>
+    <h1>Konfirmasi Pembayaran</h1>
 
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
+    @if (session('success'))
+        <p>{{ session('success') }}</p>
     @elseif (session('error'))
         <p>{{ session('error') }}</p>
     @endif
@@ -18,6 +20,7 @@
     <table border="1">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Full Name</th>
                 <th>Date of Birth</th>
                 <th>Mountain</th>
@@ -26,14 +29,15 @@
                 <th>Address</th>
                 <th>Phone</th>
                 <th>Email</th>
+                <th>Status</th>
                 <th>Queue Number</th>
-                <th>Certificate Path</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($screenings as $screening)
                 <tr>
+                    <td>{{ $screening->id }}</td>
                     <td>{{ $screening->full_name }}</td>
                     <td>{{ $screening->date_of_birth }}</td>
                     <td>{{ $screening->mountain }}</td>
@@ -42,19 +46,12 @@
                     <td>{{ $screening->address }}</td>
                     <td>{{ $screening->phone }}</td>
                     <td>{{ $screening->email }}</td>
+                    <td>{{ $screening->payment_status }}</td>
                     <td>{{ $screening->queue_number }}</td>
                     <td>
-                        @if ($screening->certificate_path)
-                            <a href="{{ asset('storage/' . $screening->certificate_path) }}" target="_blank">View
-                                Certificate</a>
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                    <td>
-                        <form action="{{ route('kasir.issue_certificate', $screening->id) }}" method="POST">
+                        <form action="{{ route('kasir.confirmPayment', $screening->id) }}" method="POST">
                             @csrf
-                            <button type="submit">Issue Certificate</button>
+                            <button type="submit">Konfirmasi Pembayaran</button>
                         </form>
                     </td>
                 </tr>
@@ -62,7 +59,7 @@
         </tbody>
     </table>
 
-    {{ $screenings->links() }} <!-- Pagination links -->
+    {{ $screenings->links() }} <!-- Paginate links -->
 </body>
 
 </html>

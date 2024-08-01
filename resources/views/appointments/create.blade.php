@@ -1,3 +1,30 @@
+{{-- <x-dashboard.dashboard-layout>
+    <h1>Create Appointment</h1>
+    <form action="{{ route('pendaki.appointments.store') }}" method="POST">
+        @csrf
+        <div>
+            <label for="user_id">User ID:</label>
+            <input type="text" name="user_id" value="{{ Auth::user()->id }}" readonly>
+        </div>
+        <div>
+            <label for="doctor_id">Doctor ID:</label>
+            <select name="doctor_id" required>
+                @foreach ($doctors as $doctor)
+                    <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <label for="scheduled_at">Scheduled At (optional):</label>
+            <input type="datetime-local" name="scheduled_at" value="{{ old('scheduled_at') }}">
+        </div>
+        <div>
+            <label for="unscheduled_reason">Unscheduled Reason (optional):</label>
+            <textarea name="unscheduled_reason">{{ old('unscheduled_reason') }}</textarea>
+        </div>
+        <button type="submit">Create Appointment</button>
+    </form>
+</x-dashboard.dashboard-layout> --}}
 <x-dashboard-layout>
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main>
@@ -122,20 +149,7 @@
                     </div>
                 </div>
             </div>
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
+            <x-alert />
             <div class="flex flex-col">
                 <div class="overflow-x-auto">
                     <div class="inline-block min-w-full align-middle">
@@ -166,7 +180,7 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                                {{-- <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                                     @foreach ($consultations as $consultation)
                                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <td class="w-4 p-4">
@@ -197,7 +211,7 @@
                                                 {{ $consultation->status }}</td>
                                         </tr>
                                     @endforeach
-                                </tbody>
+                                </tbody> --}}
                             </table>
                         </div>
                     </div>
@@ -348,6 +362,7 @@
             </div>
 
             <!-- Add Consultan -->
+            <!-- Add User Modal -->
             <div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full"
                 id="add-user-modal">
                 <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
@@ -355,8 +370,8 @@
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
                         <!-- Modal header -->
                         <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
-                            <h3 class="text-xl font-semibold dark:text-white text-gray-900">
-                                Consultan
+                            <h3 class="text-xl font-semibold dark:text-white">
+                                Buat Konsultasi
                             </h3>
                             <button type="button"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
@@ -371,11 +386,17 @@
                         </div>
                         <!-- Modal body -->
                         <div class="p-6 space-y-6">
-
                             <form action="{{ route('pendaki.appointments.store') }}" method="POST">
                                 @csrf
                                 <div class="grid grid-cols-6 gap-6">
-                                    <div class="col-span-6">
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="user_id"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Id</label>
+                                        <input type="text" name="user_id" id="first-name"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            value="{{ Auth::user()->id }}" readonly>
+                                    </div>
+                                    <div class="col-span-6 sm:col-span-3">
                                         <label for="role"
                                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dokter</label>
                                         <select name="doctor_id" id="role"
@@ -386,21 +407,30 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-span-6">
-                                        <label for="message"
-                                            class="block∂ text-sm font-medium text-gray-900 dark:text-white">Pesan</label>
-                                        <textarea type="text" id="message" name="message" rows="4"
-                                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="Pesan"></textarea>
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="scheduled_at"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Buat
+                                            Jadwal (Optional)</label>
+                                        <input type="datetime-local" name="scheduled_at" id="scheduled_at"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            value="{{ old('scheduled_at') }}" required>
                                     </div>
-                                    </ul>
+                                    <div class="col-span-6">
+                                        <label for="unscheduled_reason"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alasan
+                                            Konsultasi</label>
+                                        <textarea id="unscheduled_reason" rows="4"
+                                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">{{ old('unscheduled_reason') }}</textarea>
+                                    </div>
+                                    <input type="hidden" name="status" value="pending">
                                 </div>
+
                         </div>
                         <!-- Modal footer -->
                         <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
                             <button
                                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                type="submit">Buat Konsultasi</button>
+                                type="submit">Create Appointment</button>
                         </div>
                         </form>
                     </div>
@@ -454,53 +484,3 @@
 
     </div>
 </x-dashboard-layout>
-{{-- <x-dashboard.dashboard-layout>
-
-    <div class="container">
-        <h1>Jadwal Konsultasi</h1>
-
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <form action="{{ route('pendaki.consultasi.store') }}" method="POST">
-            @csrf
-
-            <div class="form-group">
-                <label for="doctor_id">Dokter</label>
-                <select name="doctor_id" id="doctor_id" class="form-control" required>
-                    @foreach ($doctors as $doctor)
-                        <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="schedule_id">Jadwal</label>
-                <select name="schedule_id" id="schedule_id" class="form-control" required>
-                    @foreach ($schedules as $schedule)
-                        <option value="{{ $schedule->id }}">{{ $schedule->date }} - {{ $schedule->start_time }} s/d
-                            {{ $schedule->end_time }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="question">Pertanyaan</label>
-                <textarea name="question" id="question" class="form-control" required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Buat Jadwal</button>
-        </form>
-
-        <h2>Konsultasi Saya</h2>
-        <ul>
-            @foreach ($consultations as $consultation)
-                <li>{{ $consultation->question }} - {{ $consultation->doctor->name }} -
-                    {{ $consultation->schedule->date }}</li>
-            @endforeach
-        </ul>
-    </div>
-</x-dashboard.dashboard-layout> --}}

@@ -1,4 +1,65 @@
-<x-dashboard-layout>
+{{-- <x-dashboard.dashboard-layout>
+    <x-slot:title>Appointments</x-slot:title>
+
+
+    @if (Auth::user()->role === 'pendaki')
+        <a href="{{ route('pendaki.appointments.create') }}">Create Appointment</a>
+    @endif
+    @if ($appointments->isEmpty())
+        <p>No appointments found.</p>
+    @else
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Doctor</th>
+                    <th>Scheduled At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($appointments as $appointment)
+                    <tr>
+                        <td>{{ $appointment->id }}</td>
+                        <td>{{ $appointment->user->name }}</td>
+                        <td>{{ $appointment->doctor->name }}</td>
+                        <td>{{ $appointment->scheduled_at }}</td>
+                        <td>{{ $appointment->status }}</td>
+                        <td>
+                            @if (Auth::user()->role === 'dokter' && $appointment->status === 'pending')
+                                <form action="{{ route('dokter.appointments.accept', $appointment->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    <button type="submit">Accept</button>
+                                </form>
+                            @endif
+                            @if (Auth::user()->role === 'dokter' && $appointment->status === 'confirmed')
+                                <form action="{{ route('dokter.appointments.complete', $appointment->id) }}"
+                                    method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="submit">Complete</button>
+                                </form>
+                            @endif
+                            @if (Auth::user()->role === 'pendaki')
+                                <a href="{{ route('pendaki.appointments.show', $appointment->id) }}">View</a>
+                                <a href="{{ route('pendaki.appointments.edit', $appointment->id) }}">Edit</a>
+                                <form action="{{ route('pendaki.appointments.destroy', $appointment->id) }}"
+                                    method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit">Delete</button>
+                                </form>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</x-dashboard.dashboard-layout> --}}
+<x-dashboard.dashboard-layout>
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main>
             <div
@@ -28,7 +89,7 @@
                                                 clip-rule="evenodd"></path>
                                         </svg>
                                         <a href="#"
-                                            class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Konsultasi</a>
+                                            class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white">Users</a>
                                     </div>
                                 </li>
                                 <li>
@@ -45,7 +106,7 @@
                                 </li>
                             </ol>
                         </nav>
-                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Konsultasi</h1>
+                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Consultasi</h1>
                     </div>
                     <div class="sm:flex">
                         <div
@@ -122,20 +183,7 @@
                     </div>
                 </div>
             </div>
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
+            <x-alert />
             <div class="flex flex-col">
                 <div class="overflow-x-auto">
                     <div class="inline-block min-w-full align-middle">
@@ -153,21 +201,33 @@
                                         </th>
                                         <th scope="col"
                                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                            Dokter
+                                            Nama
                                         </th>
 
                                         <th scope="col"
                                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                            Pesan
+                                            Dokter
+                                        </th>
+                                        <th scope="col"
+                                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                            Tanggal
                                         </th>
                                         <th scope="col"
                                             class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                             Status
                                         </th>
+                                        <th scope="col"
+                                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                            Action
+                                        </th>
+                                        {{-- <th scope="col"
+                                            class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                            Action
+                                        </th> --}}
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                                    @foreach ($consultations as $consultation)
+                                    @foreach ($appointments as $appointment)
                                         <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                             <td class="w-4 p-4">
                                                 <div class="flex items-center">
@@ -177,24 +237,55 @@
                                                     <label for="checkbox-1" class="sr-only">checkbox</label>
                                                 </div>
                                             </td>
-                                            <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
+                                            {{-- <td class="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
                                                 <img class="w-10 h-10 rounded-full"
-                                                    src="{{ $consultation->doctor->getProfilePhotoUrl() }}"
-                                                    alt="Neil Sims avatar">
+                                                    src="{{ Auth::user()->getProfilePhotoUrl() }}" alt="Avatar">
                                                 <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
                                                     <div class="text-base font-semibold text-gray-900 dark:text-white">
                                                     </div>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                                        {{ $consultation->doctor->name }}</div>
+                                                        {{ $appointment->name }}</div>
                                                 </div>
-                                            </td>
+                                            </td> --}}
 
                                             <td
                                                 class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $consultation->message }}</td>
+                                                {{ $appointment->user->name }}</td>
                                             <td
                                                 class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {{ $consultation->status }}</td>
+                                                {{ $appointment->doctor->name }}</td>
+                                            <td
+                                                class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ $appointment->scheduled_at }}</td>
+                                            <td
+                                                class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {{ $appointment->status }}</td>
+                                            <td class="p-4 space-x-2 whitespace-nowrap">
+                                                <button type="button" data-modal-toggle="edit-user-modal"
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z">
+                                                        </path>
+                                                        <path fill-rule="evenodd"
+                                                            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Edit user
+                                                </button>
+                                                <button type="button" data-modal-toggle="delete-user-modal"
+                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd"
+                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                            clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    Delete user
+                                                </button>
+                                            </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -347,7 +438,7 @@
                 </div>
             </div>
 
-            <!-- Add Consultan -->
+            <!-- Add User Modal -->
             <div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full"
                 id="add-user-modal">
                 <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
@@ -356,7 +447,7 @@
                         <!-- Modal header -->
                         <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
                             <h3 class="text-xl font-semibold dark:text-white text-gray-900">
-                                Consultan
+                                Add new user
                             </h3>
                             <button type="button"
                                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white"
@@ -372,26 +463,54 @@
                         <!-- Modal body -->
                         <div class="p-6 space-y-6">
 
-                            <form action="{{ route('pendaki.appointments.store') }}" method="POST">
+                            <form action="{{ route('admin.storeUser') }}" method="POST">
                                 @csrf
                                 <div class="grid grid-cols-6 gap-6">
-                                    <div class="col-span-6">
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="first-name"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+                                        <input type="text" name="name" id="first-name"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="Bonnie" required>
+                                    </div>
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="email"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                                        <input type="email" name="email" id="email"
+                                            class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="example@company.com" required>
+                                    </div>
+                                    <div class="col-span-6 sm:col-span-3">
                                         <label for="role"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dokter</label>
-                                        <select name="doctor_id" id="role"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
+                                        <select name="role" id="role"
                                             class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                             placeholder="e.g. React developer" required>
-                                            @foreach ($doctors as $doctor)
-                                                <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
-                                            @endforeach
+                                            <option value="nul">Role</option>
+                                            <option value="pendaki">Pendaki</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="kasir">Kasir</option>
+                                            <option value="paramedis">Paramedis</option>
+                                            <option value="dokter">Dokter</option>
+                                            <option value="manajer">Manajer</option>
+                                            <option value="koordinatorPenyelemat">koordinator Penyelamayatan</option>
                                         </select>
                                     </div>
-                                    <div class="col-span-6">
-                                        <label for="message"
-                                            class="block∂ text-sm font-medium text-gray-900 dark:text-white">Pesan</label>
-                                        <textarea type="text" id="message" name="message" rows="4"
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="biography"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                                        <input type="password" id="biography" name="password" rows="4"
                                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                            placeholder="Pesan"></textarea>
+                                            placeholder="Password"></input>
+                                    </div>
+                                    <div class="col-span-6 sm:col-span-3">
+                                        <label for="biography"
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
+                                            Password</label>
+                                        <input type="password" id="biography" name="password_confirmation"
+                                            rows="4"
+                                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                            placeholder="Confirm Password"></input>
                                     </div>
                                     </ul>
                                 </div>
@@ -400,7 +519,7 @@
                         <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
                             <button
                                 class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                                type="submit">Buat Konsultasi</button>
+                                type="submit">Add user</button>
                         </div>
                         </form>
                     </div>
@@ -453,54 +572,6 @@
         </main>
 
     </div>
-</x-dashboard-layout>
-{{-- <x-dashboard.dashboard-layout>
 
-    <div class="container">
-        <h1>Jadwal Konsultasi</h1>
-
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <form action="{{ route('pendaki.consultasi.store') }}" method="POST">
-            @csrf
-
-            <div class="form-group">
-                <label for="doctor_id">Dokter</label>
-                <select name="doctor_id" id="doctor_id" class="form-control" required>
-                    @foreach ($doctors as $doctor)
-                        <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="schedule_id">Jadwal</label>
-                <select name="schedule_id" id="schedule_id" class="form-control" required>
-                    @foreach ($schedules as $schedule)
-                        <option value="{{ $schedule->id }}">{{ $schedule->date }} - {{ $schedule->start_time }} s/d
-                            {{ $schedule->end_time }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="question">Pertanyaan</label>
-                <textarea name="question" id="question" class="form-control" required></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Buat Jadwal</button>
-        </form>
-
-        <h2>Konsultasi Saya</h2>
-        <ul>
-            @foreach ($consultations as $consultation)
-                <li>{{ $consultation->question }} - {{ $consultation->doctor->name }} -
-                    {{ $consultation->schedule->date }}</li>
-            @endforeach
-        </ul>
     </div>
-</x-dashboard.dashboard-layout> --}}
+</x-dashboard.dashboard-layout>

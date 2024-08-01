@@ -1,19 +1,21 @@
 <?php
 
-use App\Http\Controllers\KasirController;
-use App\Http\Controllers\KoordinatorPenyelamatController;
-use App\Http\Controllers\ManajerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\KasirController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\ManajerController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ParamedisController;
 use App\Http\Controllers\ScreeningController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ConsultationController;
-
+use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\KoordinatorPenyelamatController;
 
 // Page
 
@@ -66,7 +68,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 
 
 
-
 // Verification Email
 
 Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verify'])
@@ -81,11 +82,11 @@ Route::get('verify-email', function () {
 // !End Verification Email 
 
 
-
 // Dashboard
 
 Route::middleware(['auth'])->group(function () {
 
+    // Role Admin
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.welcome');
 
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/admin/scan/process', [AdminController::class, 'scanQr'])->name('admin.scan.process');
 
+        // Table Users
         Route::post('/admin/store-user', [AdminController::class, 'storeUser'])->name('admin.storeUser');
         Route::get('/admin/users', [AdminController::class, 'createUser'])->name('admin.createUser');
         Route::get('/admin/pendaki', [UserController::class, 'showPendaki'])->name('showPendaki');
@@ -106,21 +108,32 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/koordinator-penyelamat', [UserController::class, 'showkoordinatorPenyelamat'])->name('showKoordinatorPenyelamat');
     });
 
+    // Role Pendaki
     Route::middleware(['auth', 'role:pendaki'])->group(function () {
         Route::get('/pendaki/dashboard', [PatientController::class, 'index'])->name('pendaki.welcome');
-
-        Route::get('pendaki/screenings', [ScreeningController::class, 'index'])->name('pendaki.screening')->middleware('auth');
         Route::get('/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
         Route::get('/pendaki/consultasi', [ConsultationController::class, 'hikerIndex'])->name('pendaki.consultasi.index');
         Route::post('/pendaki/consultasi', [ConsultationController::class, 'store'])->name('pendaki.consultasi.store');
-        Route::post('/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
-        Route::get('/screenings/{id}/payment', [ScreeningController::class, 'payment'])->name('screenings.payment');
+        Route::get('pendaki/screenings', [ScreeningController::class, 'index'])->name('pendaki.screening');
+        Route::get('pendaki/screenings/create', [ScreeningController::class, 'create'])->name('pendaki.screenings.create');
+        Route::get('/pendaki/screenings/{id}/payment', [ScreeningController::class, 'payment'])->name('screenings.payment');
+        Route::post('pendaki/screenings', [ScreeningController::class, 'store'])->name('pendaki.screenings.store');
         Route::post('/payment-callback', [ScreeningController::class, 'paymentCallback'])->name('payment.callback');
+        Route::get('pendaki/screenings/{screening}/payment', [ScreeningController::class, 'payment'])->name('pendaki.screenings.payment');
         // Rute untuk menampilkan jadwal yang belum memiliki konsultasi
         Route::get('pendaki/consultasi-schedule', [ConsultationController::class, 'createSchedule'])->name('pendaki.create_schedule');
 
+        Route::get('pendaki/appointments', [AppointmentController::class, 'index'])->name('pendaki.appointments.index');
+        Route::get('pendaki/appointments/create', [AppointmentController::class, 'create'])->name('pendaki.appointments.create');
+        Route::post('pendaki/appointments', [AppointmentController::class, 'store'])->name('pendaki.appointments.store');
+        Route::get('pendaki/appointments/{appointment}', [AppointmentController::class, 'show'])->name('pendaki.appointments.show');
+        Route::get('pendaki/appointments/{appointment}/edit', [AppointmentController::class, 'edit'])->name('pendaki.appointments.edit');
+        Route::put('pendaki/appointments/{appointment}', [AppointmentController::class, 'update'])->name('pendaki.appointments.update');
+        Route::delete('pendaki/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('pendaki.appointments.destroy');
+
     });
 
+    //  Role Dokter
     Route::middleware(['role:dokter'])->group(function () {
         Route::get('/dokter/dashboard', [DokterController::class, 'index'])->name('dokter.welcome');
         Route::get('/dokter/consultasi', [ConsultationController::class, 'doctorIndex'])->name('dokter.consultasi.index');
@@ -131,26 +144,49 @@ Route::middleware(['auth'])->group(function () {
         // Rute untuk menyelesaikan konsultasi
         Route::patch('dokter/consultations/{consultation}/complete', [ConsultationController::class, 'ScheduleComplete'])->name('dokter.complete');
 
+        Route::get('dokter/appointments', [AppointmentController::class, 'doctorIndex'])->name('dokter.appointments.index');
+        Route::get('dokter/appointments/{appointment}', [AppointmentController::class, 'doctorShow'])->name('dokter.appointments.show');
+        Route::put('dokter/appointments/{appointment}/confirm', [AppointmentController::class, 'accept'])->name('dokter.appointments.confirm');
+        Route::put('dokter/appointments/{appointment}/complete', [AppointmentController::class, 'complete'])->name('dokter.appointments.complete');
+
+        // Rute untuk rekam medis
+        Route::get('dokter/appointments/{appointment}/edit', [MedicalRecordController::class, 'edit'])->name('dokter.medical_records.edit');
+        Route::put('dokter/appointments/{appointment}/update', [MedicalRecordController::class, 'update'])->name('dokter.medical_records.update');
+
 
     });
-
+    // Role Paramedis
     Route::middleware(['role:paramedis'])->group(function () {
         Route::get('/paramedis/dashboard', [ParamedisController::class, 'index'])->name('paramedis.welcome');
         Route::get('/paramedis/screening', [ParamedisController::class, 'dashboard'])->name('paramedis.dashboard');
         Route::post('/paramedis/health-check/{id}', [ParamedisController::class, 'processHealthCheck'])->name('paramedis.process');
         Route::get('/paramedis/data', [ParamedisController::class, 'dashboard'])->name('paramedis.data');
+        Route::post('/paramedis/health-check/{id}', [ParamedisController::class, 'processHealthCheck'])->name('paramedis.processHealthCheck');
     });
 
+    // Role Koordinator
     Route::middleware(['role:koordinator'])->group(function () {
         Route::get('/koordinator/dashboard', [KoordinatorPenyelamatController::class, 'index'])->name('koordinator.welcome');
     });
 
-    Route::middleware(['role:manajer'])->group(function () {
+    // Role Manajer
+    Route::middleware(['auth', 'role:manajer'])->group(function () {
         Route::get('/manajer/dashboard', [ManajerController::class, 'index'])->name('manajer.welcome');
+        Route::get('/manajer/schedule', [ManajerController::class, 'showScheduleForm'])->name('manajer.schedule.form');
+        Route::post('/manajer/schedule', [ManajerController::class, 'storeSchedule'])->name('manajer.schedule.store');
+
+        // Menghasilkan laporan
+        Route::get('/manajer/reports', [ManajerController::class, 'viewReports'])->name('manajer.reports');
+        Route::post('/manajer/report', [ManajerController::class, 'generateReport'])->name('manajer.report.generate');
     });
 
+    // Role Kasir
     Route::middleware(['role:kasir'])->group(function () {
         Route::get('/kasir/dashboard', [KasirController::class, 'index'])->name('kasir.welcome');
+        Route::get('kasir/screenings', [ScreeningController::class, 'index'])->name('kasir.screenings.index');
+        Route::post('/kasir/issue-certificate/{id}', [KasirController::class, 'issueCertificate'])->name('kasir.issueCertificate');
+        Route::post('/kasir/confirm-payment/{id}', [ScreeningController::class, 'confirmPayment'])->name('kasir.confirmPayment');
+
     });
 
 
@@ -166,13 +202,4 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
         Route::get('/screenings', [ScreeningController::class, 'index'])->name('screenings.index');
     });
-
-
 });
-
-// Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-
-
-
-
-

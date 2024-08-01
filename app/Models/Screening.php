@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Screening.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,12 +27,10 @@ class Screening extends Model
         'additional_notes',
         'status',
         'queue_number',
-        'qr_code_url', // Tambahkan kolom ini
         'payment_status',
+        'certificate_issued',
+        'certificate_path',
+        'qr_code_url',
+        'payment_confirmed'
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
