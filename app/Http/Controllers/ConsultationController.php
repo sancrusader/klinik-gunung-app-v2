@@ -15,7 +15,7 @@ class ConsultationController extends Controller
         $doctors = User::where('role', 'dokter')->get();
         $schedules = Schedule::whereDoesntHave('consultations')->get(); // Jadwal yang belum dipilih
 
-        return view('pendaki.consultasi.index', compact('consultations', 'doctors', 'schedules'));
+        return view('dashboard.pendaki.consultasi.index', compact('consultations', 'doctors', 'schedules'));
     }
 
     public function store(Request $request)
@@ -33,13 +33,13 @@ class ConsultationController extends Controller
             'question' => $request->question,
         ]);
 
-        return redirect()->route('pendaki.consultasi.index')->with('success', 'Konsultasi berhasil dijadwalkan.');
+        return redirect()->route('dashboard.pendaki.consultasi.index')->with('success', 'Konsultasi berhasil dijadwalkan.');
     }
 
     public function doctorIndex()
     {
         $consultations = Consultation::where('doctor_id', auth()->id())->get();
-        return view('dokter.consultasi.index', compact('consultations'));
+        return view('dashboard.dokter.consultasi.index', compact('consultations'));
     }
 
     public function complete(Consultation $consultation)
@@ -48,7 +48,7 @@ class ConsultationController extends Controller
             'status' => 'completed'
         ]);
 
-        return redirect()->route('dokter.consultasi.index')->with('success', 'Konsultasi berhasil diselesaikan.');
+        return redirect()->route('dashboard.dokter.consultasi.index')->with('success', 'Konsultasi berhasil diselesaikan.');
     }
 }
 

@@ -8,6 +8,6 @@ class KoordinatorPenyelamatController extends Controller
 {
     public function index()
     {
-        return view("koordinator_penyelamat.welcome");
+        return view("dashboard.koordinator_penyelamat.welcome");
     }
 }

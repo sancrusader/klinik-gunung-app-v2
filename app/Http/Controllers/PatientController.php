@@ -9,7 +9,7 @@ class PatientController extends Controller
 {
     public function index()
     {
-        return view('pendaki.welcome');
+        return view('dashboard.pendaki.welcome');
     }
 
     public function screening()

@@ -4,7 +4,7 @@
             <!-- Heading & Filters -->
             <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
                 <div>
-                    <nav class="flex" aria-label="Breadcrumb">
+                    {{-- <nav class="flex" aria-label="Breadcrumb">
                         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                             <li class="inline-flex items-center">
                                 <a href="#"
@@ -42,7 +42,7 @@
                                 </div>
                             </li>
                         </ol>
-                    </nav>
+                    </nav> --}}
                     <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Electronics</h2>
                 </div>
                 <div class="flex items-center space-x-4">

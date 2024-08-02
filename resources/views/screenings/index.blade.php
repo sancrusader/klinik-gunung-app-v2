@@ -171,7 +171,7 @@
                                             </td>
                                             <td
                                                 class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                                                @if ($screening->payment_status === 'paid')
+                                                @if ($screening->payment_confirmed === 1)
                                                     <span class="text-green-600 dark:text-green-400">Paid</span>
                                                 @else
                                                     <span class="text-red-600 dark:text-red-400">Not Paid</span>

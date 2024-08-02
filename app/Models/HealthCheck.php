@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HealthCheck extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'scan_id',
         'full_name',
@@ -19,14 +16,15 @@ class HealthCheck extends Model
         'address',
         'phone',
         'email',
-        'question_1',
-        'question_2',
-        'payment_done',
+        'question1',
+        'question2',
+        'question3',
+        'health_status'
     ];
 
-    // Relasi banyak ke satu dengan Scan
     public function scan()
     {
         return $this->belongsTo(Scan::class);
     }
 }
+

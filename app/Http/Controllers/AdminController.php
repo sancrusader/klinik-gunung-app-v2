@@ -14,13 +14,13 @@ class AdminController extends Controller
     {
 
         $users = User::all();
-        return view('admin.welcome', compact('users'));
+        return view('dashboard.admin.welcome', compact('users'));
     }
 
     public function createUser()
     {
         $users = User::all();
-        return view('admin.users.users', compact('users'));
+        return view('dashboard.admin.users.users', compact('users'));
     }
 
     public function storeUser(Request $request)
@@ -72,6 +72,6 @@ class AdminController extends Controller
         ]);
 
         // Arahkan ke dashboard paramedis
-        return redirect()->route('paramedis.dashboard')->with('status', 'Data scan QR berhasil disimpan.');
+        return redirect()->route('dashboard.paramedis.dashboard')->with('status', 'Data scan QR berhasil disimpan.');
     }
 }

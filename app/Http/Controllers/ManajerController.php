@@ -12,12 +12,12 @@ class ManajerController extends Controller
 
     public function index()
     {
-        return view("manajer.welcome");
+        return view("dashboard.manajer.welcome");
     }
     public function showScheduleForm()
     {
         $staff = User::all(); // Ambil semua staf
-        return view('manajer.schedule_form', compact('staff'));
+        return view('dashboard.manajer.schedule_form', compact('staff'));
     }
 
     public function storeSchedule(Request $request)
@@ -36,7 +36,7 @@ class ManajerController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect()->route('manajer.schedule.form')->with('success', 'Shift telah berhasil diatur.');
+        return redirect()->route('dashboard.manajer.schedule.form')->with('success', 'Shift telah berhasil diatur.');
     }
 
     public function generateReport(Request $request)
@@ -57,7 +57,7 @@ class ManajerController extends Controller
             'created_by' => auth()->id(),
         ]);
 
-        return redirect()->route('manajer.reports')->with('success', 'Laporan berhasil dibuat.');
+        return redirect()->route('dashboard.manajer.reports')->with('success', 'Laporan berhasil dibuat.');
     }
 
     private function generateReportContent($type, $startDate, $endDate)
@@ -69,6 +69,6 @@ class ManajerController extends Controller
     public function viewReports()
     {
         $reports = Report::all();
-        return view('manajer.reports', compact('reports'));
+        return view('dashboard.manajer.reports', compact('reports'));
     }
 }

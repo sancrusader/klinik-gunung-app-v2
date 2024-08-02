@@ -1,7 +1,5 @@
 <?php
 
-// app/Models/Screening.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,9 +26,9 @@ class Screening extends Model
         'status',
         'queue_number',
         'payment_status',
-        'certificate_issued',
+        'payment_confirmed',
         'certificate_path',
+        'certificate_issued',
         'qr_code_url',
-        'payment_confirmed'
     ];
 }

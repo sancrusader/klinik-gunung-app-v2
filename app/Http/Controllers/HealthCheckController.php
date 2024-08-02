@@ -12,14 +12,14 @@ class HealthCheckController extends Controller
     {
         // Menampilkan data antrian
         $scans = Scan::where('status', 'pending')->get();
-        return view('paramedis.queue', compact('scans'));
+        return view('dashboard.paramedis.queue', compact('scans'));
     }
 
     public function create($scanId)
     {
         // Menampilkan form health check
         $scan = Scan::findOrFail($scanId);
-        return view('paramedis.healthcheck', compact('scan'));
+        return view('dashboard.paramedis.healthcheck', compact('scan'));
     }
 
     public function store(Request $request, $scanId)
@@ -66,12 +66,12 @@ class HealthCheckController extends Controller
         $scan->status = 'processed';
         $scan->save();
 
-        return redirect()->route('paramedis.queue')->with('status', 'Health check berhasil disimpan.');
+        return redirect()->route('dashboard.paramedis.queue')->with('status', 'Health check berhasil disimpan.');
     }
 
     public function process(Request $request, $scanId)
     {
         // Arahkan ke form health check
-        return redirect()->route('paramedis.healthcheck.create', $scanId);
+        return redirect()->route('dashboard.paramedis.healthcheck.create', $scanId);
     }
 }

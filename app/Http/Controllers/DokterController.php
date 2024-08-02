@@ -18,6 +18,6 @@ class DokterController extends Controller
             ->orderBy('schedule_date')
             ->get();
 
-        return view('dokter.welcome', compact('schedules'));
+        return view('dashboard.dokter.welcome', compact('schedules'));
     }
 }

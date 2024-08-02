@@ -9,7 +9,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\QrCodeMail;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class ScreeningController extends Controller
 {
