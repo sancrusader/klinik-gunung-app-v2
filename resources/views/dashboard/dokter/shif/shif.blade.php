@@ -1,4 +1,3 @@
-{{-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -35,7 +34,4 @@
     </table>
 </body>
 
-</html> --}}
-<x-dashboard.dashboard-layout>
-    <x-slot:title>Dokter Dashboard</x-slot:title>
-</x-dashboard.dashboard-layout>
+</html>

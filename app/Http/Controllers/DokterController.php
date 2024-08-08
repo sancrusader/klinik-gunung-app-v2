@@ -8,7 +8,12 @@ use App\Models\StaffSchedule;
 
 class DokterController extends Controller
 {
-    public function index()
+
+    public function dashboard()
+    {
+        return view('dashboard.dokter.welcome');
+    }
+    public function shif()
     {
         $doctorId = auth()->id(); // ID dokter yang sedang login
 
@@ -18,6 +23,6 @@ class DokterController extends Controller
             ->orderBy('schedule_date')
             ->get();
 
-        return view('dashboard.dokter.welcome', compact('schedules'));
+        return view('dashboard.dokter.shif.shif', compact('schedules'));
     }
 }
