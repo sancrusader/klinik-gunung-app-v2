@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\koordinator;
+namespace App\View\Components;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class koordinatorSidebar extends Component
+class KoordinatorSidebar extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class koordinatorSidebar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.koordinator.koordinator-sidebar');
+        return view('components.sidebar.koordinator.koordinator-sidebar');
     }
 }

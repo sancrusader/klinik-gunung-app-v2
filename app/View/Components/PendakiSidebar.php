@@ -21,6 +21,6 @@ class PendakiSidebar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.pendaki.pendaki-sidebar');
+        return view('components.sidebar.pendaki.pendaki-sidebar');
     }
 }

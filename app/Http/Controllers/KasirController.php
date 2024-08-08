@@ -49,10 +49,10 @@ class KasirController extends Controller
             // Send QR Code to Email
             Mail::to($screening->email)->send(new QrCodeMail($screening, $qrCodeUrl));
 
-            return redirect()->route('dashboard.kasir.welcome')->with('success', 'Pembayaran dikonfirmasi dan QR code telah dikirim.');
+            return redirect()->route('kasir.welcome')->with('success', 'Pembayaran dikonfirmasi dan QR code telah dikirim.');
         }
 
-        return redirect()->route('dashboard.kasir.welcome')->with('error', 'Pembayaran belum dilakukan atau QR code sudah dikirim.');
+        return redirect()->route('kasir.welcome')->with('error', 'Pembayaran belum dilakukan atau QR code sudah dikirim.');
     }
 
     public function index()
@@ -130,11 +130,11 @@ class KasirController extends Controller
         $screening->payment_status = true;
         $screening->save();
 
-        $certificatePath = $this->generateCertificate($screening);
+        $certificatePath = $this->generateCertificateOffline($screening);
         $screening->certificate_path = $certificatePath;
         $screening->save();
 
-        return redirect()->route('kasir.index')->with('success', 'Pembayaran berhasil dikonfirmasi dan sertifikat telah dibuat.');
+        return redirect()->route('kasir.welcome')->with('success', 'Pembayaran berhasil dikonfirmasi dan sertifikat telah dibuat.');
     }
 
 
@@ -146,7 +146,7 @@ class KasirController extends Controller
             'date' => now()->format('Y-m-d')
         ];
 
-        $pdf = PDF::loadView('certificates.certificate', $data);
+        $pdf = PDF::loadView('certificates.simple_certificate', $data);
 
         $path = 'certificates/';
         $filename = 'certificate_' . $screening->id . '.pdf';

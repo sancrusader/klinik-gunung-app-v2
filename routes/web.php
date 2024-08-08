@@ -15,11 +15,14 @@ use App\Http\Controllers\ParamedisController;
 use App\Http\Controllers\ScreeningController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\ReceptionistController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\ScreeningOfflineController;
 use App\Http\Controllers\KoordinatorPenyelamatController;
+use App\Http\Controllers\PostController;
 
-// Page
+
+
 
 // Home Page
 Route::get('/', function () {
@@ -130,6 +133,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('pendaki/screenings/payment-callback', [ScreeningController::class, 'paymentCallback'])->name('screenings.payment.callback');
 
 
+        // Membuat Screening Offline
+        Route::get('/screening-offline/create', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
+        Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
         // Rute untuk menampilkan jadwal yang belum memiliki konsultasi
         Route::get('pendaki/consultasi-schedule', [ConsultationController::class, 'createSchedule'])->name('pendaki.create_schedule');
 
@@ -160,7 +166,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('dokter/appointments/{appointment}/edit', [MedicalRecordController::class, 'edit'])->name('dokter.medical_records.edit');
         Route::put('dokter/appointments/{appointment}/update', [MedicalRecordController::class, 'update'])->name('dokter.medical_records.update');
 
-
     });
     // Role Paramedis
     Route::middleware(['role:paramedis'])->group(function () {
@@ -168,12 +173,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/paramedis/screening', [ParamedisController::class, 'dashboard'])->name('paramedis.dashboard');
         Route::get('/paramedis/data', [ParamedisController::class, 'dashboard'])->name('paramedis.data');
         Route::post('/paramedis/health-check/{id}', [ParamedisController::class, 'processHealthCheck'])->name('paramedis.processHealthCheck');
-
         // screening Offline
         Route::get('/paramedis/screening-offline', [ParamedisController::class, 'ScreeningOffline'])->name('paramedis.ScreeningOffline');
         Route::post('/paramedis/confirm/{id}', [ParamedisController::class, 'updateHealthCheck'])->name('paramedis.confirm');
     });
 
+
+    Route::middleware(['role:receptionst'])->group(function () {
+        Route::get('/receptionst/dashboard', [KoordinatorPenyelamatController::class, 'index'])->name('receptionst.welcome');
+
+    });
 
     // Role Koordinator
     Route::middleware(['role:koordinator'])->group(function () {
@@ -195,6 +204,7 @@ Route::middleware(['auth'])->group(function () {
     // Role Kasir
     Route::middleware(['role:kasir'])->group(function () {
 
+
         Route::get('/kasir/dashboard', [KasirController::class, 'index'])->name('kasir.welcome');
 
         Route::post('/kasir/confirm-payment/{id}', [KasirController::class, 'confirmPayment'])->name('kasir.confirmPayment');
@@ -205,7 +215,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Screening Offline
         Route::get('/kasir/sc', [KasirController::class, 'ScreeningOffline'])->name('kasir.index');
-        Route::post('/kasir/confirm/{id}', [KasirController::class, 'confirmPayment'])->name('kasir.confirm');
+        Route::post('/kasir/confirm/{id}', [KasirController::class, 'confirmPaymentOffline'])->name('kasir.confirm');
     });
 
 
@@ -217,6 +227,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::middleware(['auth'])->group(function () {
+
+
         Route::get('/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
         Route::post('/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
         Route::get('/screenings', [ScreeningController::class, 'index'])->name('screenings.index');
@@ -224,14 +236,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('queues', [QueueController::class, 'index'])->name('queues.index');
         Route::get('queues/confirm-payment/{id}', [QueueController::class, 'confirmPayment'])->name('queues.confirmPayment');
 
-        Route::get('{queue}', [ScreeningOfflineController::class, 'create'])->name('screenings.offline.create');
-        Route::post('screenings/offline/{queue}', [ScreeningOfflineController::class, 'store'])->name('screenings.offline.store');
+        // Route::get('screening-offline/{queue}', [ScreeningOfflineController::class, 'create'])->name('screenings.offline.create');
+        // Route::post('screenings/offline/{queue}', [ScreeningOfflineController::class, 'store'])->name('screenings.offline.store');
 
         Route::get('payments/create/{queue}', [PaymentController::class, 'create'])->name('payments.create');
         Route::post('payments/store/{queue}', [PaymentController::class, 'store'])->name('payments.store');
     });
 });
 
-// Screening Offline
-Route::get('/screening-offline/create', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
-Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
+// Ongoin Membuat posts
+
+Route::resource('posts', PostController::class);

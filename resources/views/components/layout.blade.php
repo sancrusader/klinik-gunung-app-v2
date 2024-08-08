@@ -11,13 +11,12 @@
 
 <body class="bg-gray-50 font-inter tracking-tight text-gray-900 antialiased">
 
-    <x-navbar></x-navbar>
+    <x-navbar />
 
     {{ $slot }}
 
-    <x-footer></x-footer>
+    <x-footer />
     </div>
-
     <script>
         const menuToggle = document.getElementById('menu-toggle');
         const dropdownMenu = document.getElementById('dropdown-menu');

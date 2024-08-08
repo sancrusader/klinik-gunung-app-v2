@@ -63,6 +63,9 @@
                                     case 'pendaki':
                                         $dashboardRoute = 'pendaki.welcome';
                                         break;
+                                    case 'receptionst':
+                                        $dashboardRoute = 'receptionst.welcome';
+                                        break;
                                     default:
                                         $dashboardRoute = '/';
                                         break;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\kasir;
+namespace App\View\Components;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class kasirsidebar extends Component
+class KasirSidebar extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class kasirsidebar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.kasir.kasir-sidebar');
+        return view('components.sidebar.kasir.kasir-sidebar');
     }
 }

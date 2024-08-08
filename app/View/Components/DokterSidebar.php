@@ -21,6 +21,6 @@ class DokterSidebar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.dokter.dokter-sidebar');
+        return view('components.sidebar.dokter.dokter-sidebar');
     }
 }

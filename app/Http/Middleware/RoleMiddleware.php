@@ -33,6 +33,8 @@ class RoleMiddleware
                     return redirect()->route('paramedis.welcome');
                 case 'pendaki':
                     return redirect()->route('pendaki.welcome');
+                case 'receptionst':
+                    return redirect()->route('receptionst.welcome');
                 default:
                     return redirect()->route('login');
             }

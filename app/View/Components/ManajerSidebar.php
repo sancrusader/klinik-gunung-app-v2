@@ -21,6 +21,6 @@ class ManajerSidebar extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.manajer-sidebar');
+        return view('components.sidebar.manajer.manajer-sidebar');
     }
 }

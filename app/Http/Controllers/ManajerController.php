@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use App\Models\StaffSchedule;
+use Illuminate\Support\Carbon;
 
 class ManajerController extends Controller
 {
@@ -70,5 +71,35 @@ class ManajerController extends Controller
     {
         $reports = Report::all();
         return view('dashboard.manajer.reports', compact('reports'));
+    }
+
+    public function getNewUsers()
+    {
+        $newUsers = User::where('role', 'pendaki')
+            ->where('created_at', '>=', Carbon::now()->subMonth())
+            ->count();
+
+        return response()->json([
+            'new_users' => $newUsers,
+            'percentage_change' => $this->getPercentageChange()
+        ]);
+    }
+
+    private function getPercentageChange()
+    {
+        $currentMonth = User::where('role', 'pendaki')
+            ->where('created_at', '>=', Carbon::now()->startOfMonth())
+            ->count();
+
+        $lastMonth = User::where('role', 'pendaki')
+            ->where('created_at', '>=', Carbon::now()->subMonth()->startOfMonth())
+            ->where('created_at', '<', Carbon::now()->startOfMonth())
+            ->count();
+
+        if ($lastMonth == 0) {
+            return $currentMonth > 0 ? 100 : 0;
+        }
+
+        return (($currentMonth - $lastMonth) / $lastMonth) * 100;
     }
 }
