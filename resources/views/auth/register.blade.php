@@ -53,7 +53,7 @@
                                 </ul>
                             </div>
 
-                            <input type="hidden" name="role" value="pendaki">
+                            <input type="hidden" name="role" value="pasien">
                             <div class="flex flex-row justify-between mb-8">
                                 <label class="relative inline-flex items-center mr-3 cursor-pointer select-none">
                                     <input type="checkbox" checked value="" class="sr-only peer">

@@ -2,7 +2,9 @@
 
 // app/Http/Controllers/AppointmentController.php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\clinic_core;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Appointment;
@@ -34,7 +36,7 @@ class AppointmentController extends Controller
 
         Appointment::create($request->all());
 
-        return redirect()->route('pendaki.appointments.index')->with('success', 'Appointment created successfully.');
+        return redirect()->route('pasien.appointments.index')->with('success', 'Appointment created successfully.');
     }
 
     public function show(Appointment $appointment)
@@ -60,14 +62,14 @@ class AppointmentController extends Controller
 
         $appointment->update($request->all());
 
-        return redirect()->route('pendaki.appointments.index')->with('success', 'Appointment updated successfully.');
+        return redirect()->route('pasien.appointments.index')->with('success', 'Appointment updated successfully.');
     }
 
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
 
-        return redirect()->route('pendaki.appointments.index')->with('success', 'Appointment deleted successfully.');
+        return redirect()->route('pasien.appointments.index')->with('success', 'Appointment deleted successfully.');
     }
 
     public function accept($id)

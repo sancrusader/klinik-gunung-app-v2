@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\auth;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,8 +26,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $role = $request->role ?? 'pendaki';
-        if (!in_array($role, ['pendaki'])) {
+        $role = $request->role ?? 'pasien';
+        if (!in_array($role, ['pasien'])) {
             return redirect()->back()->withErrors(['role' => 'Invalid role.']);
         }
 
@@ -65,7 +67,7 @@ class AuthController extends Controller
         }
 
         if ($user->hasVerifiedEmail()) {
-            return redirect('/pendaki/welcome')->with('status', 'Email Anda sudah terverifikasi.');
+            return redirect('/pasien/welcome')->with('status', 'Email Anda sudah terverifikasi.');
         }
 
         // if ($user->markEmailAsVerified()) {
@@ -116,8 +118,8 @@ class AuthController extends Controller
                     return redirect()->route('manajer.welcome');
                 case 'paramedis':
                     return redirect()->route('paramedis.welcome');
-                case 'pendaki':
-                    return redirect()->route('pendaki.welcome');
+                case 'pasien':
+                    return redirect()->route('pasien.welcome');
                 default:
                     return redirect()->route('/');
             }

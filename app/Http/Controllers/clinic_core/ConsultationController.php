@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\clinic_core;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Consultation;
 use App\Models\Schedule;
@@ -15,7 +17,7 @@ class ConsultationController extends Controller
         $doctors = User::where('role', 'dokter')->get();
         $schedules = Schedule::whereDoesntHave('consultations')->get(); // Jadwal yang belum dipilih
 
-        return view('dashboard.pendaki.consultasi.index', compact('consultations', 'doctors', 'schedules'));
+        return view('dashboard.pasien.consultasi.index', compact('consultations', 'doctors', 'schedules'));
     }
 
     public function store(Request $request)
@@ -33,7 +35,7 @@ class ConsultationController extends Controller
             'question' => $request->question,
         ]);
 
-        return redirect()->route('dashboard.pendaki.consultasi.index')->with('success', 'Konsultasi berhasil dijadwalkan.');
+        return redirect()->route('dashboard.pasien.consultasi.index')->with('success', 'Konsultasi berhasil dijadwalkan.');
     }
 
     public function doctorIndex()

@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\dashboard;
 
 use App\Mail\QrCodeMail;
+
 use App\Models\Screening;
 use Illuminate\Http\Request;
+use App\Models\StaffSchedule;
+use Illuminate\Support\Carbon;
 use App\Models\ScreeningOffline;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +24,19 @@ class KasirController extends Controller
             ->paginate(10);
 
         return view('dashboard.kasir.offline', compact('screenings'));
+    }
+
+    public function shifKasir()
+    {
+        $kasirId = auth()->id(); // ID dokter yang sedang login
+
+        // Ambil jadwal untuk dokter
+        $schedules = StaffSchedule::where('staff_id', $kasirId)
+            ->whereDate('schedule_date', '>=', Carbon::today())
+            ->orderBy('schedule_date')
+            ->get();
+
+        return view('dashboard.kasir.shif.shif', compact('schedules'));
     }
     public function confirmPayment(Request $request, $id)
     {
@@ -159,6 +176,17 @@ class KasirController extends Controller
 
         return $path . $filename;
     }
+
+    // History Transaksi
+
+    public function paymentHistory()
+    {
+        // Mendapatkan semua transaksi yang sudah dibayar
+        $paidScreenings = ScreeningOffline::where('payment_status', true)->get();
+
+        return view('dashboard.kasir.payment.payment_history', compact('paidScreenings'));
+    }
+
 
 
 }

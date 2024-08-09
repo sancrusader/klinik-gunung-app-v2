@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\clinic_core;
 
+use App\Http\Controllers\Controller;
 use App\Models\Schedule;
 use App\Models\Consultation;
 use Illuminate\Http\Request;
@@ -37,6 +38,6 @@ class ScheduleController extends Controller
     {
         // Mengambil jadwal yang tidak memiliki konsultasi
         $schedules = Schedule::whereDoesntHave('consultations')->get();
-        return view('pendaki.consultasi.create_schedule', compact('schedules'));
+        return view('pasien.consultasi.create_schedule', compact('schedules'));
     }
 }

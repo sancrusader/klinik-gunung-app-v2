@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\dashboard;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Report;
@@ -18,7 +20,7 @@ class ManajerController extends Controller
     public function showScheduleForm()
     {
         $staff = User::all(); // Ambil semua staf
-        return view('dashboard.manajer.schedule_form', compact('staff'));
+        return view('dashboard.manajer.schedule_form', compact('staßff'));
     }
 
     public function storeSchedule(Request $request)
@@ -75,7 +77,7 @@ class ManajerController extends Controller
 
     public function getNewUsers()
     {
-        $newUsers = User::where('role', 'pendaki')
+        $newUsers = User::where('role', 'pasien')
             ->where('created_at', '>=', Carbon::now()->subMonth())
             ->count();
 
@@ -87,11 +89,11 @@ class ManajerController extends Controller
 
     private function getPercentageChange()
     {
-        $currentMonth = User::where('role', 'pendaki')
+        $currentMonth = User::where('role', 'pasien')
             ->where('created_at', '>=', Carbon::now()->startOfMonth())
             ->count();
 
-        $lastMonth = User::where('role', 'pendaki')
+        $lastMonth = User::where('role', 'pasien')
             ->where('created_at', '>=', Carbon::now()->subMonth()->startOfMonth())
             ->where('created_at', '<', Carbon::now()->startOfMonth())
             ->count();

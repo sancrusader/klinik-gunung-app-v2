@@ -2,8 +2,8 @@
         <x-admin-sidebar />
     @elseif(auth()->user()->role === 'paramedis')
         <x-paramedis-sidebar />
-    @elseif(auth()->user()->role === 'pendaki')
-        <x-pendaki-sidebar />
+    @elseif(auth()->user()->role === 'pasien')
+        <x-pasien-sidebar />
     @elseif(auth()->user()->role === 'dokter')
         <x-dokter-sidebar />
     @elseif(auth()->user()->role === 'kasir')

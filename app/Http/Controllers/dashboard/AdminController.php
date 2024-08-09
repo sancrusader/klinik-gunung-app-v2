@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\dashboard;
 
 use App\Models\Scan;
+
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\StaffSchedule;
+use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,7 +33,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|in:pendaki,admin,kasir,paramedis,dokter,manajer,koordinatorPenyelamat',
+            'role' => 'required|string|in:pasien,admin,kasir,paramedis,dokter,manajer,koordinatorPenyelamat',
         ]);
 
         // 
@@ -74,4 +78,18 @@ class AdminController extends Controller
         // Arahkan ke dashboard paramedis
         return redirect()->route('dashboard.paramedis.dashboard')->with('status', 'Data scan QR berhasil disimpan.');
     }
+
+    public function shifAdmin()
+    {
+        $dokterId = auth()->id(); // ID dokter yang sedang login
+
+        // Ambil jadwal untuk dokter
+        $schedules = StaffSchedule::where('staff_id', $dokterId)
+            ->whereDate('schedule_date', '>=', Carbon::today())
+            ->orderBy('schedule_date')
+            ->get();
+
+        return view('dashboard.admin.shif.shif', compact('schedules'));
+    }
+
 }

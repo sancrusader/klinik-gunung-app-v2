@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\dashboard;
+
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PatientController extends Controller
+class PasienController extends Controller
 {
     public function index()
     {
-        return view('dashboard.pendaki.welcome');
+        return view('dashboard.pasien.welcome');
     }
 
     public function screening()

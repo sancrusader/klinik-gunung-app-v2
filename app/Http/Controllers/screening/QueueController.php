@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\screening;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Queue;
 use Illuminate\Http\Request;

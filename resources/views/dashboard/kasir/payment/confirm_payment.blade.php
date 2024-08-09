@@ -11,11 +11,7 @@
 <body>
     <h1>Konfirmasi Pembayaran</h1>
 
-    @if (session('success'))
-        <p>{{ session('success') }}</p>
-    @elseif (session('error'))
-        <p>{{ session('error') }}</p>
-    @endif
+    <x-alert />
 
     <table border="1">
         <thead>
@@ -59,7 +55,7 @@
         </tbody>
     </table>
 
-    {{ $screenings->links() }} <!-- Paginate links -->
+    {{ $screenings->links() }}
 </body>
 
 </html>

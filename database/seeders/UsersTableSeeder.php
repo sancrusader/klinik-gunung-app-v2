@@ -49,10 +49,10 @@ class UsersTableSeeder extends Seeder
                 'role' => 'koordinator',
             ],
             [
-                'name' => 'Pendaki User',
-                'email' => 'pendaki@example.com',
+                'name' => 'Pasien User',
+                'email' => 'pasien@example.com',
                 'password' => Hash::make('password'),
-                'role' => 'pendaki',
+                'role' => 'pasien',
             ],
 
             [

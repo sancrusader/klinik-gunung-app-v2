@@ -7,10 +7,10 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function showPendaki()
+    public function showPasien()
     {
-        $users = User::where('role', 'pendaki')->get();
-        return view('dashboard.admin.users.pendaki', compact('users'));
+        $users = User::where('role', 'pasien')->get();
+        return view('dashboard.admin.users.pasien', compact('users'));
     }
 
     public function showAdmin()

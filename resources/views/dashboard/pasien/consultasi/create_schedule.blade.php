@@ -4,7 +4,7 @@
         @if ($schedules->isEmpty())
             <p>Tidak ada jadwal yang tersedia saat ini.</p>
         @else
-            <form action="{{ route('pendaki.store_schedule') }}" method="POST">
+            <form action="{{ route('pasien.store_schedule') }}" method="POST">
                 @csrf
                 <div class="form-group">
                     <label for="schedule">Pilih Jadwal:</label>

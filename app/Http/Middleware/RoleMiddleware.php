@@ -31,8 +31,8 @@ class RoleMiddleware
                     return redirect()->route('manajer.welcome');
                 case 'paramedis':
                     return redirect()->route('paramedis.welcome');
-                case 'pendaki':
-                    return redirect()->route('pendaki.welcome');
+                case 'pasien':
+                    return redirect()->route('pasien.welcome');
                 case 'receptionst':
                     return redirect()->route('receptionst.welcome');
                 default:

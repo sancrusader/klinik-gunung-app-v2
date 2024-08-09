@@ -1,12 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\dashboard;
 
 use App\Models\Scan;
+
 use App\Models\Screening;
 use App\Models\HealthCheck;
 use Illuminate\Http\Request;
+use App\Models\StaffSchedule;
+use Illuminate\Support\Carbon;
 use App\Models\ScreeningOffline;
+use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Storage;
 
@@ -120,4 +124,19 @@ class ParamedisController extends Controller
         // Redirect kembali ke halaman paramedis dengan pesan sukses
         return redirect()->route('paramedis.ScreeningOffline')->with('success', 'Hasil cek kesehatan berhasil diperbarui.');
     }
+
+    // Shif Schedule
+    public function shifParamedis()
+    {
+        $paramedisId = auth()->id(); // ID dokter yang sedang login
+
+        // Ambil jadwal untuk dokter
+        $schedules = StaffSchedule::where('staff_id', $paramedisId)
+            ->whereDate('schedule_date', '>=', Carbon::today())
+            ->orderBy('schedule_date')
+            ->get();
+
+        return view('dashboard.paramedis.shif.shif', compact('schedules'));
+    }
+
 }

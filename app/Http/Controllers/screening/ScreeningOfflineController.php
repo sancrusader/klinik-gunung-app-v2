@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\screening;
 
+use App\Http\Controllers\Controller;
 use App\Models\ScreeningOffline;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -31,7 +32,8 @@ class ScreeningOfflineController extends Controller
             'full_name' => $request->full_name,
         ]);
 
-        return redirect()->route('screening-offline.store')->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
+        // return redirect()->route('screening-offline.create')->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
+        return redirect()->back()->with('success', 'Antrian Dibuat');
     }
 
     // Menampilkan daftar screening yang belum diperiksa oleh paramedis

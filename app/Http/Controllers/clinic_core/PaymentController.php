@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\clinic_core;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Queue;
 use App\Models\Payment;

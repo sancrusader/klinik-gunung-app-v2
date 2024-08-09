@@ -60,8 +60,8 @@
                                     case 'paramedis':
                                         $dashboardRoute = 'paramedis.welcome';
                                         break;
-                                    case 'pendaki':
-                                        $dashboardRoute = 'pendaki.welcome';
+                                    case 'pasien':
+                                        $dashboardRoute = 'pasien.welcome';
                                         break;
                                     case 'receptionst':
                                         $dashboardRoute = 'receptionst.welcome';

@@ -1,6 +1,6 @@
 {{-- <x-dashboard.dashboard-layout>
     <h1>Create Appointment</h1>
-    <form action="{{ route('pendaki.appointments.store') }}" method="POST">
+    <form action="{{ route('pasien.appointments.store') }}" method="POST">
         @csrf
         <div>
             <label for="user_id">User ID:</label>
@@ -386,7 +386,7 @@
                         </div>
                         <!-- Modal body -->
                         <div class="p-6 space-y-6">
-                            <form action="{{ route('pendaki.appointments.store') }}" method="POST">
+                            <form action="{{ route('pasien.appointments.store') }}" method="POST">
                                 @csrf
                                 <div class="grid grid-cols-6 gap-6">
                                     <div class="col-span-6 sm:col-span-3">

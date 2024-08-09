@@ -1,26 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\KasirController;
-use App\Http\Controllers\QueueController;
-use App\Http\Controllers\DokterController;
-use App\Http\Controllers\ManajerController;
-use App\Http\Controllers\PatientController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ParamedisController;
-use App\Http\Controllers\ScreeningController;
-use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\ConsultationController;
-use App\Http\Controllers\MedicalRecordController;
-use App\Http\Controllers\ScreeningOfflineController;
-use App\Http\Controllers\KoordinatorPenyelamatController;
+use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\PostController;
-
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\screening\QueueController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\screening\ScreeningController;
+use App\Http\Controllers\clinic_core\PaymentController;
+use App\Http\Controllers\clinic_core\AppointmentController;
+use App\Http\Controllers\clinic_core\ConsultationController;
+use App\Http\Controllers\clinic_core\MedicalRecordController;
+use App\Http\Controllers\screening\ScreeningOfflineController;
+use App\Http\Controllers\dashboard\PasienController;
+use App\Http\Controllers\dashboard\ParamedisController;
+use App\Http\Controllers\dashboard\ManajerController;
+use App\Http\Controllers\dashboard\KasirController;
+use App\Http\Controllers\dashboard\AdminController;
+use App\Http\Controllers\dashboard\DokterController;
+use App\Http\Controllers\dashboard\KoordinatorPenyelamatController;
 
 
 // Home Page
@@ -103,44 +101,48 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.scan');
         })->name('admin.scan');
         Route::post('/admin/scan/process', [AdminController::class, 'scanQr'])->name('admin.scan.process');
+
         // Table Users
         Route::post('/admin/store-user', [AdminController::class, 'storeUser'])->name('admin.storeUser');
         Route::get('/admin/users', [AdminController::class, 'createUser'])->name('admin.createUser');
-        Route::get('/admin/pendaki', [UserController::class, 'showPendaki'])->name('showPendaki');
+        Route::get('/admin/pasien', [UserController::class, 'showPasien'])->name('showPasien');
         Route::get('/admin/admin', [UserController::class, 'showAdmin'])->name('showAdmin');
         Route::get('/admin/kasir', [UserController::class, 'showKasir'])->name('showKasir');
         Route::get('/admin/perawat', [UserController::class, 'showParamedis'])->name('showParamedis');
         Route::get('/admin/dokter', [UserController::class, 'showDokter'])->name('showDokter');
         Route::get('/admin/manajer', [UserController::class, 'showManajer'])->name('showManajer');
         Route::get('/admin/koordinator-penyelamat', [UserController::class, 'showkoordinatorPenyelamat'])->name('showKoordinatorPenyelamat');
+
+        // Shift
+        Route::post('/admin/shift', [AdminController::class, 'shiftAdmin'])->name('shift.admin');
     });
 
     // Role Pendaki
-    Route::middleware(['auth', 'role:pendaki'])->group(function () {
-        Route::get('/pendaki/dashboard', [PatientController::class, 'index'])->name('pendaki.welcome');
-        Route::get('/pendaki/consultasi', [ConsultationController::class, 'hikerIndex'])->name('pendaki.consultasi.index');
-        Route::post('/pendaki/consultasi', [ConsultationController::class, 'store'])->name('pendaki.consultasi.store');
+    Route::middleware(['auth', 'role:pasien'])->group(function () {
+        Route::get('/pasien/dashboard', [PasienController::class, 'index'])->name('pasien.welcome');
+        Route::get('/pasien/consultasi', [ConsultationController::class, 'hikerIndex'])->name('pasien.consultasi.index');
+        Route::post('/pasien/consultasi', [ConsultationController::class, 'store'])->name('pasien.consultasi.store');
 
-        Route::get('pendaki/screenings', [ScreeningController::class, 'index'])->name('screenings.index');
-        Route::get('pendaki/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
-        Route::post('pendaki/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
-        Route::get('pendaki/screenings/payment/{id}', [ScreeningController::class, 'payment'])->name('screenings.payment');
-        Route::post('pendaki/screenings/payment-callback', [ScreeningController::class, 'paymentCallback'])->name('screenings.payment.callback');
+        Route::get('pasien/screenings', [ScreeningController::class, 'index'])->name('screenings.index');
+        Route::get('pasien/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
+        Route::post('pasien/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
+        Route::get('pasien/screenings/payment/{id}', [ScreeningController::class, 'payment'])->name('screenings.payment');
+        Route::post('pasien/screenings/payment-callback', [ScreeningController::class, 'paymentCallback'])->name('screenings.payment.callback');
 
 
         // Membuat Screening Offline
         Route::get('/screening-offline/create', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
         Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
         // Rute untuk menampilkan jadwal yang belum memiliki konsultasi
-        Route::get('pendaki/consultasi-schedule', [ConsultationController::class, 'createSchedule'])->name('pendaki.create_schedule');
+        Route::get('pasien/consultasi-schedule', [ConsultationController::class, 'createSchedule'])->name('pasien.create_schedule');
 
-        Route::get('pendaki/appointments', [AppointmentController::class, 'index'])->name('pendaki.appointments.index');
-        Route::get('pendaki/appointments/create', [AppointmentController::class, 'create'])->name('pendaki.appointments.create');
-        Route::post('pendaki/appointments', [AppointmentController::class, 'store'])->name('pendaki.appointments.store');
-        Route::get('pendaki/appointments/{appointment}', [AppointmentController::class, 'show'])->name('pendaki.appointments.show');
-        Route::get('pendaki/appointments/{appointment}/edit', [AppointmentController::class, 'edit'])->name('pendaki.appointments.edit');
-        Route::put('pendaki/appointments/{appointment}', [AppointmentController::class, 'update'])->name('pendaki.appointments.update');
-        Route::delete('pendaki/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('pendaki.appointments.destroy');
+        Route::get('pasien/appointments', [AppointmentController::class, 'index'])->name('pasien.appointments.index');
+        Route::get('pasien/appointments/create', [AppointmentController::class, 'create'])->name('pasien.appointments.create');
+        Route::post('pasien/appointments', [AppointmentController::class, 'store'])->name('pasien.appointments.store');
+        Route::get('pasien/appointments/{appointment}', [AppointmentController::class, 'show'])->name('pasien.appointments.show');
+        Route::get('pasien/appointments/{appointment}/edit', [AppointmentController::class, 'edit'])->name('pasien.appointments.edit');
+        Route::put('pasien/appointments/{appointment}', [AppointmentController::class, 'update'])->name('pasien.appointments.update');
+        Route::delete('pasien/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('pasien.appointments.destroy');
     });
 
     //  Role Dokter
@@ -174,10 +176,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    Route::middleware(['role:receptionst'])->group(function () {
-        Route::get('/receptionst/dashboard', [KoordinatorPenyelamatController::class, 'index'])->name('receptionst.welcome');
+    // Route::middleware(['role:receptionst'])->group(function () {
+    //     Route::get('/receptionst/dashboard', [KoordinatorController::class, 'index'])->name('receptionst.welcome');
 
-    });
+    // });
 
     // Role Koordinator
     Route::middleware(['role:koordinator'])->group(function () {
@@ -199,13 +201,19 @@ Route::middleware(['auth'])->group(function () {
 
     // Role Kasir
     Route::middleware(['role:kasir'])->group(function () {
+        // Dashboard Kasir
         Route::get('/kasir/dashboard', [KasirController::class, 'index'])->name('kasir.welcome');
+        // Confirm Payment
         Route::post('/kasir/confirm-payment/{id}', [KasirController::class, 'confirmPayment'])->name('kasir.confirmPayment');
         Route::get('/kasir/certificate/{id}', [KasirController::class, 'showCertificate'])->name('kasir.showCertificate');
         Route::get('/kasir/certificates', [KasirController::class, 'viewCertificates'])->name('kasir.certificates');
         // Screening Offline
-        Route::get('/kasir/sc', [KasirController::class, 'ScreeningOffline'])->name('kasir.index');
+        Route::get('/kasir/screening-offline', [KasirController::class, 'ScreeningOffline'])->name('kasir.screening');
         Route::post('/kasir/confirm/{id}', [KasirController::class, 'confirmPaymentOffline'])->name('kasir.confirm');
+        // Sift Kasir
+        Route::get('kasir/shif', [KasirController::class, 'shifKasir'])->name('kasir.shif');
+        // History Pembayaran
+        Route::get('/kasir/payment-history', [KasirController::class, 'paymentHistory'])->name('kasir.paymentHistory');
     });
 
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -220,8 +228,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/screenings', [ScreeningController::class, 'index'])->name('screenings.index');
         Route::get('queues', [QueueController::class, 'index'])->name('queues.index');
         Route::get('queues/confirm-payment/{id}', [QueueController::class, 'confirmPayment'])->name('queues.confirmPayment');
-        // Route::get('screening-offline/{queue}', [ScreeningOfflineController::class, 'create'])->name('screenings.offline.create');
-        // Route::post('screenings/offline/{queue}', [ScreeningOfflineController::class, 'store'])->name('screenings.offline.store');
+        Route::get('screening-offline/{queue}', [ScreeningOfflineController::class, 'create'])->name('screenings.offline.create');
+        Route::post('screenings/offline/{queue}', [ScreeningOfflineController::class, 'store'])->name('screenings.offline.store');
         Route::get('payments/create/{queue}', [PaymentController::class, 'create'])->name('payments.create');
         Route::post('payments/store/{queue}', [PaymentController::class, 'store'])->name('payments.store');
     });

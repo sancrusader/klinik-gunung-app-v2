@@ -17,4 +17,4 @@
     <strong>Status:</strong> {{ $appointment->status }}
 </div>
 
-<a href="{{ route('pendaki.appointments.index') }}">Back to Appointments</a>
+<a href="{{ route('pasien.appointments.index') }}">Back to Appointments</a>

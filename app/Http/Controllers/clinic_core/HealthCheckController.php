@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\clinic_core;
 
+use App\Http\Controllers\Controller;
 use App\Models\HealthCheck;
 use App\Models\Scan;
 use Illuminate\Http\Request;
