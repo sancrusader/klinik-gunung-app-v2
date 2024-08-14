@@ -1,5 +1,5 @@
 <x-dashboard.dashboard-layout>
-    <x-slot:title>Screening Payment</x-slot:title>
+    <x-slot:title>Screenings Offline</x-slot:title>
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main>
             <div
@@ -17,7 +17,7 @@
                                                 d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
                                             </path>
                                         </svg>
-                                        Home
+                                        Dashboard
                                     </a>
                                 </li>
                                 <li>
@@ -29,12 +29,12 @@
                                                 clip-rule="evenodd"></path>
                                         </svg>
                                         <span class="ml-1 text-gray-400 md:ml-2 dark:text-gray-500"
-                                            aria-current="page">List</span>
+                                            aria-current="page">Shift</span>
                                     </div>
                                 </li>
                             </ol>
                         </nav>
-                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Pembayaran</h1>
+                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Shift</h1>
                     </div>
                     <x-alert />
                     <div class="flex flex-col">
@@ -54,18 +54,10 @@
                                                 </th>
                                                 <th scope="col"
                                                     class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                                    Status Pembayaran
-                                                </th>
-                                                <th scope="col"
-                                                    class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                                    Tanggal Pembayaran
-                                                </th>
-                                                <th scope="col"
-                                                    class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                                    Certificate
+                                                    Aksi
                                                 </th>
                                         <tbody>
-                                            @foreach ($paidScreenings as $screening)
+                                            @foreach ($screenings as $screening)
                                                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                                     <td
                                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -75,23 +67,31 @@
                                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {{ $screening->full_name }}
                                                     </td>
-                                                    <td class="p-4 whitespace-nowrap">
-                                                        <span
-                                                            class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400 border border-green-100 dark:border-green-500">
-                                                            {{ $screening->payment_status ? 'Sudah Bayar' : 'Belum Bayar' }}</span>
-                                                    </td>
                                                     <td
                                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                        {{ $screening->updated_at->format('d-m-Y H:i') }}
-                                                    </td>
-
                                                     <td>
+                                                        <form action="{{ route('paramedis.confirm', $screening->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <select name="health_check_result" class="form-control"
+                                                                required>
+                                                                <option value="" disabled selected>Pilih Status
+                                                                </option>
+                                                                <option value="tidak_didampingi">Tidak Didampingi
+                                                                </option>
+                                                                <option value="butuh_pendamping">Butuh Pendamping
+                                                                </option>
+                                                                <option value="butuh_dokter">Butuh Dokter</option>
+                                                            </select>
+                                                            <button type="submit"
+                                                                class="btn btn-primary mt-2">Konfirmasi</button>
+                                                        </form>
+                                                    </td>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
-
-
                                 </div>
                             </div>
                         </div>

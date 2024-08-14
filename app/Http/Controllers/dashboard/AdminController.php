@@ -8,9 +8,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\StaffSchedule;
 use Illuminate\Support\Carbon;
+use App\Models\ScreeningOffline;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -92,4 +94,41 @@ class AdminController extends Controller
         return view('dashboard.admin.shif.shif', compact('schedules'));
     }
 
+    public function showRegisterManualForm()
+    {
+        return view('dashboard.admin.register_patients_manual');
+    }
+
+    // Memproses pendaftaran manual
+    public function registerPatientsManual(Request $request)
+    {
+        $patients = $request->input('patients');
+
+        foreach ($patients as $index => $patient) {
+            // Validasi data pasien
+            $validator = Validator::make($patient, [
+                'full_name' => 'required|string|max:255',
+                // 'address' => 'required|string|max:255',
+                // Tambahkan validasi lain sesuai kebutuhan
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput()
+                    ->with('error', 'Terdapat kesalahan dalam data pasien ke-' . ($index + 1));
+            }
+
+            // Menyimpan data pasien ke database
+            ScreeningOffline::create([
+                'queue_number' => ScreeningOffline::max('queue_number') + 1,
+                'full_name' => $patient['full_name'],
+                // 'address' => $patient['address'],
+                // Tambahkan input lain sesuai kebutuhan
+            ]);
+        }
+
+        return redirect()->route('admin.register-patients-manual')->with('success', 'Pendaftaran pasien berhasil dilakukan.');
+    }
 }
+

@@ -31,8 +31,6 @@ class ScreeningOfflineController extends Controller
             'queue_number' => $queueNumber,
             'full_name' => $request->full_name,
         ]);
-
-        // return redirect()->route('screening-offline.create')->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
         return redirect()->back()->with('success', 'Antrian Dibuat');
     }
 
