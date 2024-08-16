@@ -2,25 +2,84 @@
 
 namespace App\Http\Controllers\dashboard;
 
-use App\Http\Controllers\Controller;
-
+use App\Http\Controllers\screening\ScreeningOfflineController;
 use App\Models\User;
+
 use App\Models\Report;
 use Illuminate\Http\Request;
 use App\Models\StaffSchedule;
 use Illuminate\Support\Carbon;
+use App\Models\ScreeningOffline;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class ManajerController extends Controller
 {
 
     public function index()
     {
-        return view("dashboard.manajer.welcome");
+
+        $latestScreening = ScreeningOffline::orderBy('created_at', 'desc')->take(5)->get();
+
+        // Ambil total pasien baru per hari selama 7 hari terakhir
+        $patientsData = User::where('role', 'pasien') // Ambil berdasarkan peran pasien
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_patients')
+            ->where('created_at', '>=', Carbon::now()->subDays(1))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Siapkan data untuk chart
+        $datesPasien = [];
+        $totalsPasien = [];
+
+        foreach ($patientsData as $data) {
+            $datesPasien[] = Carbon::parse($data->date)->format('d F');
+            $totalsPasien[] = $data->total_patients;
+        }
+
+        // Ambil total pendapatan minggu ini
+        $paymentsData = ScreeningOffline::selectRaw('DATE(created_at) as date, SUM(amount_paid) as total_payment')
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->where('payment_status', true) // Hanya mengambil data yang sudah dibayar
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Siapkan data untuk chart
+        $dates = [];
+        $totals = [];
+
+        foreach ($paymentsData as $data) {
+            $dates[] = Carbon::parse($data->date)->format('d F');
+            $totals[] = $data->total_payment;
+        }
+
+        $totalPaymentsThisWeek = ScreeningOffline::where('payment_status', true)
+            ->where('created_at', '>=', Carbon::now()->startOfWeek())
+            ->sum('amount_paid');
+
+        $totalPaymentsLastWeek = ScreeningOffline::where('payment_status', true)
+            ->whereBetween('created_at', [
+                Carbon::now()->subWeek()->startOfWeek(),
+                Carbon::now()->subWeek()->endOfWeek()
+            ])->sum('amount_paid');
+
+        if ($totalPaymentsLastWeek > 0) {
+            $percentageChange = (($totalPaymentsThisWeek - $totalPaymentsLastWeek) / $totalPaymentsLastWeek) * 100;
+        } else {
+            $percentageChange = 100;
+        }
+
+        $totalPatients = User::where('role', 'pasien')->count();
+
+        return view('dashboard.manajer.welcome', compact('dates', 'totals', 'totalPaymentsThisWeek', 'totalPaymentsLastWeek', 'percentageChange', 'datesPasien', 'totalsPasien', 'totalPatients', 'latestScreening'));
     }
+
     public function showScheduleForm()
     {
         $staff = User::all(); // Ambil semua staf
-        return view('dashboard.manajer.schedule_form', compact('staßff'));
+        return view('dashboard.manajer.schedule_form', compact('staff'));
     }
 
     public function storeSchedule(Request $request)
@@ -104,4 +163,18 @@ class ManajerController extends Controller
 
         return (($currentMonth - $lastMonth) / $lastMonth) * 100;
     }
+
+    // Activity
+    public function ScreeningAcitivity()
+    {
+        // Mendapatkan semua transaksi yang sudah dibayar
+        $screenings = ScreeningOffline::all();
+
+        // Menyertakan URL sertifikat dalam setiap screening
+        foreach ($screenings as $screening) {
+            $screening->certificate_url = Storage::url($screening->certificate_path);
+        }
+        return view('dashboard.manajer.screening.screening_activity', compact('screenings'));
+    }
+
 }

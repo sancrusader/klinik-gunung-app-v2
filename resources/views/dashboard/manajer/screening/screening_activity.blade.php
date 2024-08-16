@@ -1,5 +1,5 @@
 <x-dashboard.dashboard-layout>
-    <x-slot:title>Payment History</x-slot:title>
+    <x-slot:title>Screening Activity</x-slot:title>
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main>
             <div
@@ -37,7 +37,7 @@
                                                     Certificate
                                                 </th>
                                         <tbody>
-                                            @forelse ($paidScreenings as $screening)
+                                            @forelse ($screenings as $screening)
                                                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                                     <td
                                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -49,7 +49,7 @@
                                                     </td>
                                                     <td class="p-4 whitespace-nowrap">
                                                         <span
-                                                            class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400 border border-green-100 dark:border-green-500">
+                                                            class="{{ $screening->payment_status ? 'bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400 border border-green-100 dark:border-green-500' : 'bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-md border border-red-100 dark:border-red-400 dark:bg-gray-700 dark:text-red-400' }}">
                                                             {{ $screening->payment_status ? 'Sudah Bayar' : 'Belum Bayar' }}</span>
                                                     </td>
                                                     <td

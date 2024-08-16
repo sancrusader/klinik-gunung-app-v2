@@ -139,4 +139,12 @@ class ParamedisController extends Controller
         return view('dashboard.paramedis.shif.shif', compact('schedules'));
     }
 
+    public function history()
+    {
+        $screenings = ScreeningOffline::whereNotNull('health_check_result')
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return view('dashboard.paramedis.screenings.screening_history', compact('screenings'));
+    }
 }

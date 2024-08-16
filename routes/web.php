@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\CommunityController;
@@ -125,12 +127,13 @@ Route::middleware(['auth'])->group(function () {
         // Pasien Membuat Screening Offline / mendaftarkan antrian
         Route::get('/screening-offline/create', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
         Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
-        // Rute untuk menampilkan jadwal yang belum memiliki konsultasi
-        Route::get('pasien/consultasi-schedule', [ConsultationController::class, 'createSchedule'])->name('pasien.create_schedule');
         // Pasien Melakukan Konsultasi schedule maupun tidak
+
         Route::get('pasien/appointments', [AppointmentController::class, 'index'])->name('pasien.appointments.index');
+
         Route::get('pasien/appointments/create', [AppointmentController::class, 'create'])->name('pasien.appointments.create');
-        Route::post('pasien/appointments', [AppointmentController::class, 'store'])->name('pasien.appointments.store');
+
+        Route::post('pasien/appointments/store', [AppointmentController::class, 'store'])->name('pasien.appointments.store');
         Route::get('pasien/appointments/{appointment}', [AppointmentController::class, 'show'])->name('pasien.appointments.show');
         Route::get('pasien/appointments/{appointment}/edit', [AppointmentController::class, 'edit'])->name('pasien.appointments.edit');
         Route::put('pasien/appointments/{appointment}', [AppointmentController::class, 'update'])->name('pasien.appointments.update');
@@ -143,14 +146,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.welcome');
         // Shift Dokter
         Route::get('dokter/shif', [DokterController::class, 'shif'])->name('dokter.shif');
+
         // Rute untuk menampilkan jadwal konsultasi dokter
-        Route::get('dokter/jadwal', [ConsultationController::class, 'doctorSchedule'])->name('dokter.schedule');
-        // Rute untuk menyelesaikan konsultasi
-        Route::patch('dokter/consultations/{consultation}/complete', [ConsultationController::class, 'ScheduleComplete'])->name('dokter.complete');
         Route::get('dokter/appointments', [AppointmentController::class, 'doctorIndex'])->name('dokter.appointments.index');
+        // 
         Route::get('dokter/appointments/{appointment}', [AppointmentController::class, 'doctorShow'])->name('dokter.appointments.show');
         Route::put('dokter/appointments/{appointment}/confirm', [AppointmentController::class, 'accept'])->name('dokter.appointments.confirm');
         Route::put('dokter/appointments/{appointment}/complete', [AppointmentController::class, 'complete'])->name('dokter.appointments.complete');
+
         // Rute untuk rekam medis
         Route::get('dokter/appointments/{appointment}/edit', [MedicalRecordController::class, 'edit'])->name('dokter.medical_records.edit');
         Route::put('dokter/appointments/{appointment}/update', [MedicalRecordController::class, 'update'])->name('dokter.medical_records.update');
@@ -165,6 +168,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/paramedis/screening-offline', [ParamedisController::class, 'ScreeningOffline'])->name('paramedis.ScreeningOffline');
         Route::post('/paramedis/confirm/{id}', [ParamedisController::class, 'updateHealthCheck'])->name('paramedis.confirm');
         Route::get('/paramedis/shif', [ParamedisController::class, 'shifParamedis'])->name('shift.paramedis');
+        Route::get('/paramedis/screening/history', [ParamedisController::class, 'history'])->name('paramedis.ScreeningHistory');
     });
 
     // Role Koordinator
@@ -182,6 +186,7 @@ Route::middleware(['auth'])->group(function () {
         // Menghasilkan laporan
         Route::get('/manajer/reports', [ManajerController::class, 'viewReports'])->name('manajer.reports');
         Route::post('/manajer/report', [ManajerController::class, 'generateReport'])->name('manajer.report.generate');
+        Route::get('/manajer/screening-activity', [ManajerController::class, 'ScreeningAcitivity'])->name('manajer.screeningActivity');
     });
 
     // Role Kasir
@@ -199,6 +204,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kasir/shif', [KasirController::class, 'shifKasir'])->name('kasir.shif');
         // History Pembayaran
         Route::get('/kasir/payment-history', [KasirController::class, 'paymentHistory'])->name('kasir.paymentHistory');
+        Route::get('kasir/laporan-keuangan', [FinanceController::class, 'index'])->name('finance.index');
+
     });
 
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -224,6 +231,9 @@ Route::resource('posts', PostController::class);
 
 Route::middleware(['auth'])->group(function () {
 
+    Route::get('/screening-offline/{id}/edit', [ScreeningOfflineController::class, 'edit'])->name('screeningOffline.edit');
+    Route::put('/screening-offline/{id}', [ScreeningOfflineController::class, 'update'])->name('screeningOffline.update');
+
     Route::get('screening-offline/antrian/show', [ScreeningOfflineController::class, 'show'])->name('screeningOffline.show');
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
     Route::post('/community/topic', [CommunityController::class, 'storeTopic'])->name('community.storeTopic');
@@ -231,3 +241,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/community/topic/{id}/comment', [CommunityController::class, 'storeComment'])->name('community.storeComment');
     Route::post('/community/comment/{id}/reply', [CommunityController::class, 'storeReply'])->name('community.storeReply');
 });
+
+
+Route::get('/laporan/pdf', [ReportController::class, 'generatePDF'])->name('report.pdf');

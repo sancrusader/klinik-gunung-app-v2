@@ -30,8 +30,9 @@ class ScreeningOfflineController extends Controller
         ScreeningOffline::create([
             'queue_number' => $queueNumber,
             'full_name' => $request->full_name,
+            'user_id' => auth()->id(),
         ]);
-        return redirect()->back()->with('success', 'Antrian Dibuat');
+        return redirect()->route('screeningOffline.show')->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
     }
 
     // Menampilkan daftar screening yang belum diperiksa oleh paramedis
@@ -108,4 +109,33 @@ class ScreeningOfflineController extends Controller
 
         return $path . $filename;
     }
+
+    public function show()
+    {
+        $userId = auth()->id();
+        $screenings = ScreeningOffline::where('user_id', $userId)->get();
+        return view('dashboard.pasien.screening.history_screening_offline', compact('screenings'));
+    }
+
+    public function edit($id)
+    {
+        $screening = ScreeningOffline::findOrFail($id);
+        return view('dashboard.paramedis.screenings.screening_edit', compact('screening'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'health_check_result' => 'required|string',
+        ]);
+
+        $screening = ScreeningOffline::findOrFail($id);
+        $screening->health_check_result = $request->health_check_result;
+        $screening->save();
+
+        return redirect()->route('paramedis.ScreeningHistory')->with('success', 'Hasil screening berhasil diperbarui.');
+    }
+
+
+
 }

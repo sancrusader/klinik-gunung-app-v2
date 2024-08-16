@@ -17,6 +17,42 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class KasirController extends Controller
 {
+    public function index()
+    {
+        // Ambil total pendapatan minggu ini
+        $paymentsData = ScreeningOffline::selectRaw('DATE(created_at) as date, SUM(amount_paid) as total_payment')
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->where('payment_status', true) // Hanya mengambil data yang sudah dibayar
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Siapkan data untuk chart
+        $dates = [];
+        $totals = [];
+
+        foreach ($paymentsData as $data) {
+            $dates[] = Carbon::parse($data->date)->format('d F');
+            $totals[] = $data->total_payment;
+        }
+        $totalPaymentsThisWeek = ScreeningOffline::where('payment_status', true)
+            ->where('created_at', '>=', Carbon::now()->startOfWeek())
+            ->sum('amount_paid');
+
+        $totalPaymentsLastWeek = ScreeningOffline::where('payment_status', true)
+            ->whereBetween('created_at', [
+                Carbon::now()->subWeek()->startOfWeek(),
+                Carbon::now()->subWeek()->endOfWeek()
+            ])->sum('amount_paid');
+
+        if ($totalPaymentsLastWeek > 0) {
+            $percentageChange = (($totalPaymentsThisWeek - $totalPaymentsLastWeek) / $totalPaymentsLastWeek) * 100;
+        } else {
+            $percentageChange = 100; // Jika minggu lalu tidak ada pembayaran, anggap 100% kenaikan
+        }
+
+        return view('dashboard.kasir.welcome', compact('dates', 'totals', 'totalPaymentsThisWeek', 'percentageChange'));
+    }
     public function dashboard()
     {
         $screenings = ScreeningOffline::where('payment_status', false)
@@ -72,14 +108,8 @@ class KasirController extends Controller
         return redirect()->route('kasir.welcome')->with('error', 'Pembayaran belum dilakukan atau QR code sudah dikirim.');
     }
 
-    public function index()
-    {
-        $screenings = Screening::where('payment_status', true)
-            ->where('payment_confirmed', false)
-            ->paginate(10);
 
-        return view('dashboard.kasir.welcome', compact('screenings'));
-    }
+
     public function issueCertificate(Request $request, $id)
     {
         $screening = Screening::findOrFail($id);
@@ -141,10 +171,11 @@ class KasirController extends Controller
         return view('dashboard.kasir.screening_offline', compact('screenings'));
     }
 
-    public function confirmPaymentOffline($id)
+    public function confirmPaymentOffline(Request $request, $id)
     {
         $screening = ScreeningOffline::findOrFail($id);
         $screening->payment_status = true;
+        $screening->amount_paid = $request->amount_paid;
         $screening->save();
 
         $certificatePath = $this->generateCertificateOffline($screening);
@@ -153,6 +184,7 @@ class KasirController extends Controller
 
         return redirect()->route('kasir.welcome')->with('success', 'Pembayaran berhasil dikonfirmasi dan sertifikat telah dibuat.');
     }
+
 
 
     private function generateCertificateOffline($screening)
@@ -165,7 +197,7 @@ class KasirController extends Controller
 
         $pdf = PDF::loadView('certificates.simple_certificate', $data);
 
-        $path = 'certificates/';
+        $path = 'public/certificates/';
         $filename = 'certificate_' . $screening->id . '.pdf';
 
         if (!Storage::exists($path)) {
@@ -183,6 +215,11 @@ class KasirController extends Controller
     {
         // Mendapatkan semua transaksi yang sudah dibayar
         $paidScreenings = ScreeningOffline::where('payment_status', true)->get();
+
+        // Menyertakan URL sertifikat dalam setiap screening
+        foreach ($paidScreenings as $screening) {
+            $screening->certificate_url = Storage::url($screening->certificate_path);
+        }
 
         return view('dashboard.kasir.payment.payment_history', compact('paidScreenings'));
     }

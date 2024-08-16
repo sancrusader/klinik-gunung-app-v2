@@ -10,11 +10,14 @@ class ScreeningOffline extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
+        'user_id',
         'full_name',
         'queue_number',
         'health_check_result',
         'payment_status',
         'certificate_issued',
         'certificate_path',
+        'amount_paid'
     ];
 }

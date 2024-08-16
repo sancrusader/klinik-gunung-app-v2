@@ -1,8 +1,5 @@
 <h1>History Screening Offline</h1>
-@if (session('success'))
-    <div class="mb-4 text-green-600">
-        {{ session('success') }}
-@endif
+<x-alert />
 <table>
     <thead>
         <tr>

@@ -1,4 +1,4 @@
-{{-- <x-dashboard.dashboard-layout>
+<x-dashboard.dashboard-layout>
     <x-slot:title>Appointments</x-slot:title>
 
 
@@ -58,8 +58,8 @@
             </tbody>
         </table>
     @endif
-</x-dashboard.dashboard-layout> --}}
-<x-dashboard.dashboard-layout>
+</x-dashboard.dashboard-layout>
+{{-- <x-dashboard.dashboard-layout>
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main>
             <div
@@ -169,4 +169,4 @@
     </div>
 
     </div>
-</x-dashboard.dashboard-layout>
+</x-dashboard.dashboard-layout> --}}

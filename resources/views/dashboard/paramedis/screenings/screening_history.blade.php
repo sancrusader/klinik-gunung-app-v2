@@ -34,7 +34,8 @@
                                 </li>
                             </ol>
                         </nav>
-                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Shift</h1>
+                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">screening offline
+                        </h1>
                     </div>
                     <x-alert />
                     <div class="flex flex-col">
@@ -54,6 +55,10 @@
                                                 </th>
                                                 <th scope="col"
                                                     class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                                    Status
+                                                </th>
+                                                <th scope="col"
+                                                    class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                                     Aksi
                                                 </th>
                                         <tbody>
@@ -69,24 +74,11 @@
                                                     </td>
                                                     <td
                                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <td>
-                                                        <form action="{{ route('paramedis.confirm', $screening->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            <select name="health_check_result" class="form-control"
-                                                                required>
-                                                                <option value="" disabled selected>Pilih Status
-                                                                </option>
-                                                                <option value="tidak_didampingi">Tidak Didampingi
-                                                                </option>
-                                                                <option value="butuh_pendamping">Butuh Pendamping
-                                                                </option>
-                                                                <option value="butuh_dokter">Butuh Dokter</option>
-                                                            </select>
-                                                            <button type="submit"
-                                                                class="btn btn-primary mt-2">Konfirmasi</button>
-                                                        </form>
+                                                        {{ $screening->health_check_result }}
                                                     </td>
+                                                    <td>
+                                                        <a href="{{ route('screeningOffline.edit', $screening->id) }}"
+                                                            class="btn btn-warning">Edit</a>
                                                     </td>
                                                 </tr>
                                             @endforeach

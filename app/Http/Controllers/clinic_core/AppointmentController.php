@@ -1,11 +1,8 @@
 <?php
 
-// app/Http/Controllers/AppointmentController.php
-
 namespace App\Http\Controllers\clinic_core;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\User;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
@@ -34,7 +31,14 @@ class AppointmentController extends Controller
             'status' => 'required|in:pending,confirmed,cancelled,completed'
         ]);
 
-        Appointment::create($request->all());
+        // Menyimpan data appointment
+        Appointment::create([
+            'user_id' => $request->user_id,
+            'doctor_id' => $request->doctor_id,
+            'scheduled_at' => $request->scheduled_at,
+            'unscheduled_reason' => $request->unscheduled_reason,
+            'status' => $request->status,
+        ]);
 
         return redirect()->route('pasien.appointments.index')->with('success', 'Appointment created successfully.');
     }
@@ -59,6 +63,8 @@ class AppointmentController extends Controller
             'unscheduled_reason' => 'nullable|string',
             'status' => 'required|in:pending,confirmed,cancelled,completed'
         ]);
+
+        dd($request->all());
 
         $appointment->update($request->all());
 
@@ -90,11 +96,11 @@ class AppointmentController extends Controller
     public function doctorIndex()
     {
         $appointments = Appointment::where('doctor_id', auth()->id())->get();
-        return view('appointments.doctor_index', compact('appointments'));
+        return view('dashboard.dokter.appointments.appointments_index', compact('appointments'));
     }
 
     public function doctorShow(Appointment $appointment)
     {
-        return view('appointments.doctor_show', compact('appointment'));
+        return view('dashboard.dokter.appointments.appointments_show', compact('appointment'));
     }
 }

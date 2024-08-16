@@ -11,7 +11,7 @@
                             <p class="mb-4 text-grey-700">Create Your Account</p>
                             @csrf
 
-                            <x-alert />
+                            <x-auth-alert />
 
                             {{-- Name --}}
                             <x-form.label for="name" id="Name" />
