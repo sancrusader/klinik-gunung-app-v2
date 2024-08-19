@@ -88,7 +88,6 @@ class ScreeningOfflineController extends Controller
 
         return redirect()->route('screening_offlines.index')->with('success', 'Pembayaran berhasil dan sertifikat telah dibuat.');
     }
-
     private function generateCertificate($screening)
     {
         $data = [
@@ -109,33 +108,25 @@ class ScreeningOfflineController extends Controller
 
         return $path . $filename;
     }
-
     public function show()
     {
         $userId = auth()->id();
         $screenings = ScreeningOffline::where('user_id', $userId)->get();
         return view('dashboard.pasien.screening.history_screening_offline', compact('screenings'));
     }
-
     public function edit($id)
     {
         $screening = ScreeningOffline::findOrFail($id);
         return view('dashboard.paramedis.screenings.screening_edit', compact('screening'));
     }
-
     public function update(Request $request, $id)
     {
         $request->validate([
             'health_check_result' => 'required|string',
         ]);
-
         $screening = ScreeningOffline::findOrFail($id);
         $screening->health_check_result = $request->health_check_result;
         $screening->save();
-
         return redirect()->route('paramedis.ScreeningHistory')->with('success', 'Hasil screening berhasil diperbarui.');
     }
-
-
-
 }

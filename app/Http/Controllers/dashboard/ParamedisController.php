@@ -103,7 +103,7 @@ class ParamedisController extends Controller
     public function ScreeningOffline()
     {
         $screenings = ScreeningOffline::whereNull('health_check_result')->paginate(10);
-        return view('dashboard.paramedis.screening_offline', compact('screenings'));
+        return view('dashboard.paramedis.screenings.screening_offline', compact('screenings'));
     }
 
     // Memperbarui hasil cek kesehatan
@@ -111,7 +111,7 @@ class ParamedisController extends Controller
     {
         // Validasi input
         $request->validate([
-            'health_check_result' => 'required|in:tidak_didampingi,butuh_pendamping,butuh_dokter',
+            'health_check_result' => 'required|in:sehat,butuh_pendamping,butuh_dokter',
         ]);
 
         // Temukan data screening offline berdasarkan ID

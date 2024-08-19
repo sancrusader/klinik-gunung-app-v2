@@ -1,7 +1,5 @@
 <x-dashboard.dashboard-layout>
     <x-slot:title>Appointments</x-slot:title>
-
-
     @if (Auth::user()->role === 'pasien')
         <a href="{{ route('pasien.appointments.create') }}">Create Appointment</a>
     @endif

@@ -92,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.welcome');
         // Scan Kode Qr untuk Screening online
         Route::get('/admin/scan', function () {
-            return view('admin.scan');
+            return view('dashboard.admin.scan');
         })->name('admin.scan');
         // Meneruskan Data Hasil Scan Ke Paramedis
         Route::post('/admin/scan/process', [AdminController::class, 'scanQr'])->name('admin.scan.process');
@@ -244,3 +244,4 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::get('/laporan/pdf', [ReportController::class, 'generatePDF'])->name('report.pdf');
+Route::get('/laporan', [ReportController::class, 'index'])->name('report.index');

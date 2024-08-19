@@ -1,4 +1,5 @@
 <x-layout>
+    <x-slot:title>Screening Offline</x-slot:title>
     <div class="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
         <!-- Card -->
         <div class="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800">
