@@ -18,8 +18,8 @@
             <label for="health_check_result">Status Kesehatan</label>
             <select name="health_check_result" class="form-control" required>
                 <option value="" disabled>Pilih Status</option>
-                <option value="tidak_didampingi"
-                    {{ $screening->health_check_result == 'tidak_didampingi' ? 'selected' : '' }}>Tidak Didampingi
+                <option value="sehat" {{ $screening->health_check_result == 'sehat' ? 'selected' : '' }}>Tidak
+                    Didampingi (sehat)
                 </option>
                 <option value="butuh_pendamping"
                     {{ $screening->health_check_result == 'butuh_pendamping' ? 'selected' : '' }}>Butuh Pendamping

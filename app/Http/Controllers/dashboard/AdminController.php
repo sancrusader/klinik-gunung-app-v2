@@ -78,7 +78,7 @@ class AdminController extends Controller
         ]);
 
         // Arahkan ke dashboard paramedis
-        return redirect()->route('dashboard.paramedis.dashboard')->with('status', 'Data scan QR berhasil disimpan.');
+        return redirect()->route('paramedis.dashboard')->with('status', 'Data scan QR berhasil disimpan.');
     }
 
     public function shifAdmin()

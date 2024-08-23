@@ -122,13 +122,13 @@ class ScreeningController extends Controller
         return redirect()->route('kasir.index')->with('error', 'Pembayaran belum dilakukan.');
     }
 
-    public function kasirDashboard()
+    public function kasirScreeningPayment()
     {
         $screenings = Screening::where('payment_status', true)
             ->where('payment_confirmed', false)
             ->paginate(10);
 
-        return view('kasir.dashboard', compact('screenings'));
+        return view('dashboard.kasir.screening_online.confirm_payment_screening', compact('screenings'));
     }
 
     private function generateQueueNumber()

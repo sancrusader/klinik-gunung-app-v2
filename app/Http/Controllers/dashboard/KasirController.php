@@ -53,14 +53,6 @@ class KasirController extends Controller
 
         return view('dashboard.kasir.welcome', compact('dates', 'totals', 'totalPaymentsThisWeek', 'percentageChange'));
     }
-    public function dashboard()
-    {
-        $screenings = ScreeningOffline::where('payment_status', false)
-            ->where('payment_confirmed', false)
-            ->paginate(10);
-
-        return view('dashboard.kasir.offline', compact('screenings'));
-    }
 
     public function shifKasir()
     {

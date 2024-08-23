@@ -50,7 +50,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('manajer.reports') }}"
+                        <a href="{{ route('report.index') }}"
                             class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"

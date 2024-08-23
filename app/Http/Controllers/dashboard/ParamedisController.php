@@ -27,7 +27,7 @@ class ParamedisController extends Controller
         // Ambil semua scan dengan status 'pending'
         $scans = Scan::where('status', 'pending')->get();
 
-        return view('dashboard.paramedis.data', compact('scans'));
+        return view('dashboard.paramedis.scan_result.screening_online', compact('scans'));
     }
 
     public function processHealthCheck(Request $request, $id)

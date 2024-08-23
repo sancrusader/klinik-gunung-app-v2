@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\clinic_core;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Notifications\AppointmentNotification;
 
 class AppointmentController extends Controller
 {
@@ -32,13 +33,16 @@ class AppointmentController extends Controller
         ]);
 
         // Menyimpan data appointment
-        Appointment::create([
+        $appointment = Appointment::create([
             'user_id' => $request->user_id,
             'doctor_id' => $request->doctor_id,
             'scheduled_at' => $request->scheduled_at,
             'unscheduled_reason' => $request->unscheduled_reason,
             'status' => $request->status,
         ]);
+
+        $doctor = User::where('role', 'dokter')->get();
+        $doctor->notify(new AppointmentNotification($appointment));
 
         return redirect()->route('pasien.appointments.index')->with('success', 'Appointment created successfully.');
     }

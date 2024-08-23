@@ -1,5 +1,5 @@
 <x-dashboard.dashboard-layout>
-    <x-slot:title>Screenings Offline</x-slot:title>
+    <x-slot:title>History Screening Offline</x-slot:title>
     <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
         <main>
             <div
@@ -29,7 +29,7 @@
                                                 clip-rule="evenodd"></path>
                                         </svg>
                                         <span class="ml-1 text-gray-400 md:ml-2 dark:text-gray-500"
-                                            aria-current="page">Shift</span>
+                                            aria-current="page">Screening Offline</span>
                                     </div>
                                 </li>
                             </ol>

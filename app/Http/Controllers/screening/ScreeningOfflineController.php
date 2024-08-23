@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\screening;
 
-use App\Http\Controllers\Controller;
-use App\Models\ScreeningOffline;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\ScreeningOffline;
+use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\NewScreeningNotification;
 
 class ScreeningOfflineController extends Controller
 {
@@ -27,11 +29,20 @@ class ScreeningOfflineController extends Controller
         $lastQueueNumber = ScreeningOffline::max('queue_number');
         $queueNumber = $lastQueueNumber ? $lastQueueNumber + 1 : 1;
 
-        ScreeningOffline::create([
+        $screeningOffline = ScreeningOffline::create([
             'queue_number' => $queueNumber,
             'full_name' => $request->full_name,
             'user_id' => auth()->id(),
         ]);
+
+        // Ambil semua user dengan role 'paramedis'
+        $paramedics = User::where('role', 'paramedis')->get();
+
+        // Kirim notifikasi ke masing-masing paramedis
+        foreach ($paramedics as $paramedic) {
+            $paramedic->notify(new NewScreeningNotification($screeningOffline));
+        }
+
         return redirect()->route('screeningOffline.show')->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
     }
 

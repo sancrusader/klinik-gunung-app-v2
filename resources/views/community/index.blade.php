@@ -15,6 +15,10 @@
                                 <p>{{ $topic->description }}</p>
                                 <a href="{{ route('community.show', $topic->id) }}" class="btn btn-secondary">Lihat
                                     Diskusi</a>
+                                @if ($topic->user_id === auth()->id())
+                                    <a href="{{ route('community.delete', $topic->id) }}" class="btn btn-secondary"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus topik ini?');">Hapus</a>
+                                @endif
                             </div>
                             <hr>
                         </div>
