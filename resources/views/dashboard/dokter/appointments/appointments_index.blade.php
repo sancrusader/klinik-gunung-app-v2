@@ -60,12 +60,19 @@
                                                         {{ $appointment->status }}
                                                     </td>
                                                     <td>
+
                                                         @if ($appointment->status == 'pending')
-                                                            <button type="button" data-modal-target="confirm-modal"
-                                                                data-modal-toggle="confirm-modal"
-                                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                                Confirm
-                                                            </button>
+                                                            <form id="confirm.form"
+                                                                action="{{ route('dokter.appointments.confirm', $appointment->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button type="button" data-modal-target="confirm-modal"
+                                                                    data-modal-toggle="confirm-modal"
+                                                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                                    Confirm
+                                                                </button>
+                                                            </form>
                                                         @endif
 
                                                         @if ($appointment->status == 'confirmed')
@@ -122,16 +129,14 @@
                     <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to
                         confirm
                         this appointment?</h3>
-                    <form action="{{ route('dokter.appointments.confirm', $appointment->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <button type="submit"
-                            class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                            Yes, Confirm
-                        </button>
-                        <button type="button" data-modal-hide="confirm-modal"
-                            class="py-2.5 px-5 ml-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
-                            Cancel</button>
+                    <button type="submit"
+                        onclick="event.preventDefault(); document.getElementById('confirm.form').submit();"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Yes, Confirm
+                    </button>
+                    <button type="button" data-modal-hide="confirm-modal"
+                        class="py-2.5 px-5 ml-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
+                        Cancel</button>
                     </form>
                 </div>
             </div>

@@ -25,10 +25,15 @@ class NewScreeningNotification extends Notification
 
     public function toDatabase($notifiable)
     {
+
+        $profileImageUrl = $this->screening->user && $this->screening->user->profile_photo_path
+            ? asset('storage/' . $this->screening->user->profile_photo_path)
+            : asset('storage/avatar/klinik_gunung_avatar.jpg'); // Gambar default
         return [
             'screening_id' => $this->screening->id,
             'message' => $this->screening->full_name . ' Membuat antrain screening',
             'full_name' => $this->screening->full_name,
+            'profile_image' => $profileImageUrl,
         ];
     }
 }

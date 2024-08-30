@@ -155,9 +155,6 @@
                                                             <button type="submit">Complete</button>
                                                         </form>
                                                     @endif
-
-
-
                                                 </td>
                                             </tr>
                                         </tbody>

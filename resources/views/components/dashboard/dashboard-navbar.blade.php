@@ -51,17 +51,24 @@
                             clip-rule="evenodd"></path>
                     </svg>
                 </button>
-                <!-- Notifications -->
-                <!-- Dropdown menu -->
                 <button type="button" data-dropdown-toggle="notification-dropdown"
                     class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700">
+                    @php
+                        $unreadCount = auth()->user()->unreadNotifications->count();
+                    @endphp
+                    @if ($unreadCount > 0)
+                        <span
+                            class="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                            {{ $unreadCount }}
+                        </span>
+                    @endif
                     <span class="sr-only">View notifications</span>
+
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
                         </path>
                     </svg>
-
                 </button>
 
                 <div class="z-20 z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
@@ -71,23 +78,19 @@
                         Notifications
                     </div>
                     <div>
-                        {{-- Notification --}}
-
                         @php
-                            $allNotifications = auth()->user()->notifications;
+                            $allNotifications = auth()->user()->notifications->sortByDesc('created_at')->take(5);
                         @endphp
 
                         @if ($allNotifications->isEmpty())
-                            <p>No notifications found.</p>
+                            <p>Belum Ada Notifikasi</p>
                         @else
-                            {{-- /Notification --}}
                             @foreach ($allNotifications as $notification)
                                 <a href="#"
                                     class="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
                                     <div class="flex-shrink-0">
                                         <img class="rounded-full w-11 h-11"
-                                            src="https://flowbite-admin-dashboard.vercel.app/images/users/bonnie-green.png"
-                                            alt="Jese image">
+                                            src="{{ $notification->data['profile_image'] }}" alt="avatar">
                                         <div
                                             class="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 border border-white rounded-full bg-primary-700 dark:border-gray-700">
                                             <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"
@@ -171,6 +174,11 @@
                                 <a href="{{ route('profile.edit') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                                     role="menuitem">Settings</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('cart.index') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    role="menuitem">Cart</a>
                             </li>
                             <li>
                                 <a href=""

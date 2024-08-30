@@ -53,7 +53,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('screening-offline.create') }}"
+                        <a href="{{ route('screeningOffline.show') }}"
                             class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -94,7 +94,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('community.index') }}"
+                        <a href="{{ route('emergency_calls.create') }}"
                             class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -106,6 +106,22 @@
 
 
                             <span class="ml-3" sidebar-toggle-item>Emergecy Respone</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('products.index') }}"
+                            class="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                    d="M4 4a1 1 0 0 1 1-1h1.5a1 1 0 0 1 .979.796L7.939 6H19a1 1 0 0 1 .979 1.204l-1.25 6a1 1 0 0 1-.979.796H9.605l.208 1H17a3 3 0 1 1-2.83 2h-2.34a3 3 0 1 1-4.009-1.76L5.686 5H5a1 1 0 0 1-1-1Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+
+
+
+                            <span class="ml-3" sidebar-toggle-item>Products</span>
                         </a>
                     </li>
                 </ul>

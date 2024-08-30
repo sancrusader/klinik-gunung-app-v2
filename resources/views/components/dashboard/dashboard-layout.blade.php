@@ -17,16 +17,18 @@
     <x-dashboard-navbar />
 
     <x-sidebar />
+    <div class="flex flex-col min-h-screen">
+        <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
 
-    <div class="flex pt-16 overflow-hidden bg-gray-50 dark:bg-gray-900">
+            {{ $slot }}
 
-        {{ $slot }}
+            <x-dashboard-footer />
 
-        <x-dashboard-footer />
-    </div>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <script src="https://flowbite-admin-dashboard.vercel.app//app.bundle.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/datepicker.min.js"></script>
+
+            <script async defer src="https://buttons.github.io/buttons.js"></script>
+            <script src="https://flowbite-admin-dashboard.vercel.app//app.bundle.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/datepicker.min.js"></script>
+
 </body>
 
 </html>

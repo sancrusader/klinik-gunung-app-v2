@@ -1,15 +1,17 @@
 <?php
 
-use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KtpController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\EmergencyCallController;
 use App\Http\Controllers\dashboard\AdminController;
 use App\Http\Controllers\dashboard\KasirController;
 use App\Http\Controllers\dashboard\DokterController;
@@ -22,8 +24,6 @@ use App\Http\Controllers\clinic_core\AppointmentController;
 use App\Http\Controllers\clinic_core\MedicalRecordController;
 use App\Http\Controllers\screening\ScreeningOfflineController;
 use App\Http\Controllers\dashboard\KoordinatorPenyelamatController;
-
-
 /**
  * Route web klinik Gunung
  * 
@@ -53,13 +53,6 @@ Route::get('services', function () {
 Route::get('/contact-us', [ContactController::class, 'showForm'])->name('contact.form');
 Route::post('/contact-us', [ContactController::class, 'submitForm'])->name('contact.submit');
 
-// Products Page
-Route::get('products', function () {
-    return view('pages.products', ['title' => 'Products']);
-})->name('products');
-
-// !End Page
-
 // Auth 
 Route::get('/login', function () {
     return view('auth.login', ['title' => 'Login']);
@@ -80,9 +73,7 @@ Route::post('email/resend', [AuthController::class, 'resend'])->name('verificati
 Route::get('verify-email', function () {
     return view('auth.verify-email');
 })->name('verify.email');
-
 // !End Verification Email 
-
 
 // Dashboard
 Route::middleware(['auth'])->group(function () {
@@ -106,36 +97,58 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/dokter', [UserController::class, 'showDokter'])->name('showDokter');
         Route::get('/admin/manajer', [UserController::class, 'showManajer'])->name('showManajer');
         Route::get('/admin/koordinator-penyelamat', [UserController::class, 'showkoordinatorPenyelamat'])->name('showKoordinatorPenyelamat');
-        // End
+        // !End
+
+
         // Pendafataran Massal
         Route::get('/admin/register-patients-manual', [AdminController::class, 'showRegisterManualForm'])->name('admin.register-patients-manual');
         Route::post('/admin/register-patients-manual', [AdminController::class, 'registerPatientsManual']);
+
+        // !End Pendaftaran
+
         // Shift Admin
         Route::post('/admin/shift', [AdminController::class, 'shiftAdmin'])->name('shift.admin');
+        // !End Shift Admin
     });
+
     // Role Pasien
     Route::middleware(['role:pasien'])->group(function () {
         // Dashboard Pasien
         Route::get('/pasien/dashboard', [PasienController::class, 'index'])->name('pasien.welcome');
-        // Screening Online
+        // Routing Untung Screening Online
         Route::get('pasien/screenings', [ScreeningController::class, 'index'])->name('screenings.index');
+        // Membuat Screening
         Route::get('pasien/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
+        // Melihat Daftar Screening yang dibuat oleh pasien
         Route::post('pasien/screenings', [ScreeningController::class, 'store'])->name('screenings.store');
-        // Pembayaran
+        // Pembayaran untuk screening
         Route::get('pasien/screenings/payment/{id}', [ScreeningController::class, 'payment'])->name('screenings.payment');
         Route::post('pasien/screenings/payment-callback', [ScreeningController::class, 'paymentCallback'])->name('screenings.payment.callback');
+
         // Pasien Membuat Screening Offline / mendaftarkan antrian
         Route::get('/screening-offline/create', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
-        Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
+
         // Pasien Melakukan Konsultasi schedule maupun tidak
         Route::get('pasien/appointments', [AppointmentController::class, 'index'])->name('pasien.appointments.index');
+        // Membuat appointments 
         Route::get('pasien/appointments/create', [AppointmentController::class, 'create'])->name('pasien.appointments.create');
+        // Mengirim data appointments
         Route::post('pasien/appointments/store', [AppointmentController::class, 'store'])->name('pasien.appointments.store');
+
+        // Detail Appointments
         Route::get('pasien/appointments/{appointment}', [AppointmentController::class, 'show'])->name('pasien.appointments.show');
+
+        // Edit Appointments
         Route::get('pasien/appointments/{appointment}/edit', [AppointmentController::class, 'edit'])->name('pasien.appointments.edit');
+
+        // Melakukan put untuk update data appointments
         Route::put('pasien/appointments/{appointment}', [AppointmentController::class, 'update'])->name('pasien.appointments.update');
+
+        // Menghapus Appointments atau membatalkannya
         Route::delete('pasien/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('pasien.appointments.destroy');
     });
+
+    // !End Role Pasien
 
 
     //  Role Dokter
@@ -166,12 +179,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/paramedis/shif', [ParamedisController::class, 'shifParamedis'])->name('shift.paramedis');
         Route::get('/paramedis/screening/history', [ParamedisController::class, 'history'])->name('paramedis.ScreeningHistory');
     });
+    // !End Role Paramedis
+
+
     // Role Koordinator
     Route::middleware(['role:koordinator'])->group(function () {
         Route::get('/koordinator/dashboard', [KoordinatorPenyelamatController::class, 'index'])->name('koordinator.welcome');
         Route::get('koordinator/manajemen-darurat', [KoordinatorPenyelamatController::class, 'ManajemenDarurat'])->name('koordinator.manajemen');
         Route::get('koordinator/report', [KoordinatorPenyelamatController::class, 'report'])->name('koordinator.report');
     });
+    // !End Role Koordinator
+
+
     // Role Manajer
     Route::middleware(['role:manajer'])->group(
         function () {
@@ -184,6 +203,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('manajer/report', [ReportController::class, 'index'])->name('report.index');
         }
     );
+    // !End Role Manajer
 
     // Role Kasir
     Route::middleware(['role:kasir'])->group(function () {
@@ -204,11 +224,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kasir/laporan-keuangan', [FinanceController::class, 'index'])->name('finance.index');
     });
 
+    // !End role kasir
+
+    // Routing Edit Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.update.photo');
     Route::get('/profile/password', [ProfileController::class, 'showPasswordForm'])->name('profile.showPasswordForm');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    // !End Edit profile
 
     Route::middleware(['auth'])->group(function () {
         Route::get('/screenings/create', [ScreeningController::class, 'create'])->name('screenings.create');
@@ -226,11 +250,10 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('posts', PostController::class);
 
 Route::middleware(['auth'])->group(function () {
-
     // Route Screening Offline
     Route::get('/screening-offline/{id}/edit', [ScreeningOfflineController::class, 'edit'])->name('screeningOffline.edit');
     Route::put('/screening-offline/{id}', [ScreeningOfflineController::class, 'update'])->name('screeningOffline.update');
-    Route::get('screening-offline/antrian/show', [ScreeningOfflineController::class, 'show'])->name('screeningOffline.show');
+    Route::get('pasien/screening/offline', [ScreeningOfflineController::class, 'show'])->name('screeningOffline.show');
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
     Route::post('/community/topic', [CommunityController::class, 'storeTopic'])->name('community.storeTopic');
     Route::get('/community/topic/{id}', [CommunityController::class, 'show'])->name('community.show');
@@ -239,9 +262,48 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/community/topic/delete/{id}', [CommunityController::class, 'deleteTopic'])->name('community.delete');
 });
 
+
+// Notifikasi
 Route::get('/notifications/mark-all-as-read', function () {
     auth()->user()->unreadNotifications->markAsRead();
     return back();
 })->name('notifications.markAllAsRead');
+// !End Notifikasi
 
 Route::get('screeningOfflines/{screening}', [ScreeningOfflineController::class, 'show'])->name('screeningOfflines.show');
+
+// Emergency calls
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pasien/emergency_calls', [EmergencyCallController::class, 'create'])->name('emergency_calls.create');
+    Route::post('emergency_calls', [EmergencyCallController::class, 'store'])->name('emergency_calls.store');
+    Route::get('emergency_calls', [EmergencyCallController::class, 'index'])->name('emergency_calls.index');
+    Route::get('emergency_calls/{id}/status/{status}', [EmergencyCallController::class, 'updateStatus'])->name('emergency_calls.updateStatus');
+    Route::get('emergency_calls/show', [EmergencyCallController::class, 'show'])->name('emergency_calls.index');
+
+
+    Route::get('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.index');
+    Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+
+});
+
+// !End Emergency calls
+Route::get('/screening/offline', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
+Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
+
+
+//  E-Commerce
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/admin/products', [ProductController::class, 'AdminIndex'])->name('products.admin.index');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+Route::post('/products/create/new', [ProductController::class, 'store'])->name('products.store');
+Route::get('/products/{id}/details', [ProductController::class, 'show'])->name('products.show');
+Route::get('admin/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+
+Route::post('admin/products/remove/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::post('admin/products/update', [ProductController::class, 'update'])->name('products.update');
+
+
+// Menambahkan Ke Cart
+

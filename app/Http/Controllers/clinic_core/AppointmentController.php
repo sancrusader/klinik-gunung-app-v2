@@ -13,7 +13,9 @@ class AppointmentController extends Controller
     public function index()
     {
         $appointments = Appointment::with('user', 'doctor')->get();
-        return view('appointments.index', compact('appointments'));
+        $doctors = User::where('role', 'dokter')->get();
+
+        return view('dashboard.pasien.appointments.index', compact('appointments', 'doctors'));
     }
 
     public function create()
@@ -41,8 +43,12 @@ class AppointmentController extends Controller
             'status' => $request->status,
         ]);
 
-        $doctor = User::where('role', 'dokter')->get();
-        $doctor->notify(new AppointmentNotification($appointment));
+        $doctors = User::where('role', 'dokter')->get();
+
+        foreach ($doctors as $doctor) {
+            $doctor->notify(new AppointmentNotification($appointment));
+        }
+
 
         return redirect()->route('pasien.appointments.index')->with('success', 'Appointment created successfully.');
     }

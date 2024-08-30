@@ -9,12 +9,17 @@
                         <x-auth.header-auth>Sign In</x-auth.header-auth>
                         <p class="mb-4 text-grey-700">Enter your email and password</p>
                         @csrf
+
                         <x-alert />
+
                         {{-- Email --}}
                         <x-form.label for="email" id="Email" />
+
                         <x-form.input type="email" name="email" placeholder="Your Email" />
+
                         {{-- Password --}}
                         <x-form.label for="password" id="Password" />
+
                         <x-form.input type="password" name="password" placeholder="Password" />
 
                         <div class="flex flex-row justify-between mb-8">

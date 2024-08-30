@@ -67,12 +67,6 @@
                             <table class="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-600">
                                 <thead class="bg-gray-100 dark:bg-gray-700">
                                     <tr>
-                                        <th scope="col" class="p-4">
-                                            <div class="flex items-center">
-                                                <input id="checkbox-all" type="checkbox" value=""
-                                                    class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
-                                            </div>
-                                        </th>
                                         <th scope="col"
                                             class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white">
                                             Queue Number
@@ -102,13 +96,6 @@
                                 <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
                                     @foreach ($screenings as $screening)
                                         <tr>
-                                            <td class="w-4 p-4">
-                                                <div class="flex items-center">
-                                                    <input id="checkbox-{{ $screening->id }}" type="checkbox"
-                                                        value=""
-                                                        class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800">
-                                                </div>
-                                            </td>
                                             <td
                                                 class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $screening->queue_number }}
@@ -141,7 +128,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{-- {{ $screenings->links() }} --}}
                         </div>
                     </div>
                 </div>

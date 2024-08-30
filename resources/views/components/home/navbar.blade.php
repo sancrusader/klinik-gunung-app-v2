@@ -4,8 +4,10 @@
             <img src="{{ asset('assets/logo/kg.png') }}" class="mr-3 h-10 sm:h-9" alt="Flowbite Logo" />
             <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"></span>
         </a>
+
         <div class="flex items-center lg:order-2">
             @guest
+
                 <a href="{{ route('login') }}"
                     class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
                     Log in
@@ -15,8 +17,22 @@
                     Register
                 </a>
             @endguest
-
             @auth
+
+                <a href="{{ route('cart.index') }}"
+                    class="inline-flex items-center rounded-lg justify-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium leading-none text-gray-900 dark:text-white">
+                    <span class="sr-only">
+                        Cart
+                    </span>
+                    <svg class="w-5 h-5 lg:me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312" />
+                    </svg>
+
+                    <span class="hidden sm:flex">My Cart</span>
+
+                </a>
                 <div class="flex items-center ml-3">
                     <div>
                         <button type="button"
@@ -26,7 +42,10 @@
                             <img class="w-8 h-8 rounded-full" src="{{ Auth::user()->getProfilePhotoUrl() }}"
                                 alt="user photo">
                         </button>
+
+
                     </div>
+
                     <!-- Dropdown menu -->
                     <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
                         id="dropdown-2">
@@ -117,19 +136,19 @@
                     <x-navlink href='/' :active="request()->is('/')">Home</x-navlink>
                 </li>
                 <li>
-                    <x-navlink href='blog' :active="request()->is('blog')">Blog</x-navlink>
+                    <x-navlink href='/blog' :active="request()->is('blog')">Blog</x-navlink>
                 </li>
                 <li>
-                    <x-navlink href='contact' :active="request()->is('contact')">Contact Us</x-navlink>
+                    <x-navlink href='/contact' :active="request()->is('contact')">Contact Us</x-navlink>
                 </li>
                 <li>
-                    <x-navlink href='services' :active="request()->is('services')">Our Services</x-navlink>
+                    <x-navlink href='/services' :active="request()->is('services')">Our Services</x-navlink>
                 </li>
                 <li>
-                    <x-navlink href='about' :active="request()->is('about')">About</x-navlink>
+                    <x-navlink href='/about' :active="request()->is('about')">About</x-navlink>
                 </li>
                 <li>
-                    <x-navlink href='products' :active="request()->is('products')">Products</x-navlink>
+                    <x-navlink href='/products' :active="request()->is('products')">Products</x-navlink>
                 </li>
             </ul>
         </div>

@@ -1,6 +1,5 @@
 <x-dashboard.dashboard-layout>
     <h1>Appointment Details</h1>
-
     <div>
         <strong>User ID:</strong> {{ $appointment->user_id }}
     </div>

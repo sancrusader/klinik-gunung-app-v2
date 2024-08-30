@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\NewScreeningNotification;
+use App\Events\NewScreeningCreated;
 
 class ScreeningOfflineController extends Controller
 {
@@ -29,11 +30,15 @@ class ScreeningOfflineController extends Controller
         $lastQueueNumber = ScreeningOffline::max('queue_number');
         $queueNumber = $lastQueueNumber ? $lastQueueNumber + 1 : 1;
 
+        $userId = auth()->check() ? auth()->id() : null;
+
         $screeningOffline = ScreeningOffline::create([
             'queue_number' => $queueNumber,
             'full_name' => $request->full_name,
-            'user_id' => auth()->id(),
+            'user_id' => $userId,
         ]);
+
+        event(new NewScreeningCreated($screeningOffline));
 
         // Ambil semua user dengan role 'paramedis'
         $paramedics = User::where('role', 'paramedis')->get();

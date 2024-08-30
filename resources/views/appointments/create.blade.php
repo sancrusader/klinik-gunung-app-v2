@@ -1,9 +1,10 @@
-{{-- <x-dashboard.dashboard-layout> --}}
 <div id="main-content" class="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
     <main>
         <h1>Create Appointment</h1>
         <form action="{{ route('pasien.appointments.store') }}" method="POST">
             @csrf
+            <x-alert />
+
             <div>
                 <label for="user_id">User ID:</label>
                 <input type="text" name="user_id" value="{{ Auth::user()->id }}" readonly>
@@ -29,3 +30,5 @@
             </div>
             <button type="submit">Create Appointment</button>
         </form>
+    </main>
+</div>
