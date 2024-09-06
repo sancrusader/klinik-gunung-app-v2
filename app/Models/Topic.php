@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class Topic extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'user_id'];
+    protected $fillable = ['title', 'description', 'user_id', 'image_path'];
 
     public function user()
     {
@@ -26,5 +27,15 @@ class Topic extends Model
     {
         return $this->hasMany(Comment::class);
     }
+        public function likes()
+    {
+        return $this->belongsToMany(User::class, 'likes');
+    }
+
+    public function isTopicCreator(Topic $topic)
+{
+    return $this->id === $topic->user_id;
+}
+
 }
 

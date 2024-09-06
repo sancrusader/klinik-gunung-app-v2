@@ -50,7 +50,6 @@ class KasirController extends Controller
         } else {
             $percentageChange = 100; // Jika minggu lalu tidak ada pembayaran, anggap 100% kenaikan
         }
-
         return view('dashboard.kasir.welcome', compact('dates', 'totals', 'totalPaymentsThisWeek', 'percentageChange'));
     }
 
@@ -99,9 +98,6 @@ class KasirController extends Controller
 
         return redirect()->route('kasir.welcome')->with('error', 'Pembayaran belum dilakukan atau QR code sudah dikirim.');
     }
-
-
-
     public function issueCertificate(Request $request, $id)
     {
         $screening = Screening::findOrFail($id);
@@ -114,7 +110,6 @@ class KasirController extends Controller
 
             return redirect()->route('dashboard.kasir.dashboard')->with('status', 'Sertifikat telah berhasil dikeluarkan.');
         }
-
         return redirect()->route('dashboard.kasir.dashboard')->with('error', 'Pendaki belum diproses oleh paramedis.');
     }
 
@@ -132,7 +127,6 @@ class KasirController extends Controller
             'email' => $screening->email,
             'date' => now()->format('Y-m-d')
         ];
-
         $pdf = PDF::loadView('certificates.certificate', $data);
 
         $path = 'certificates/';
@@ -146,14 +140,12 @@ class KasirController extends Controller
 
         return $path . $filename;
     }
-
     public function viewCertificates()
     {
         $screenings = Screening::whereNotNull('certificate_path')->paginate(10);
 
         return view('dashboard.kasir.certificates', compact('screenings'));
     }
-
     public function ScreeningOffline()
     {
         $screenings = ScreeningOffline::whereNotNull('health_check_result')
@@ -162,7 +154,6 @@ class KasirController extends Controller
 
         return view('dashboard.kasir.screening_offline', compact('screenings'));
     }
-
     public function confirmPaymentOffline(Request $request, $id)
     {
         $screening = ScreeningOffline::findOrFail($id);
@@ -176,8 +167,6 @@ class KasirController extends Controller
 
         return redirect()->route('kasir.welcome')->with('success', 'Pembayaran berhasil dikonfirmasi dan sertifikat telah dibuat.');
     }
-
-
 
     private function generateCertificateOffline($screening)
     {
@@ -212,10 +201,18 @@ class KasirController extends Controller
         foreach ($paidScreenings as $screening) {
             $screening->certificate_url = Storage::url($screening->certificate_path);
         }
-
         return view('dashboard.kasir.payment.payment_history', compact('paidScreenings'));
     }
+    public function search(Request $request)
+    {
+        $search = $request->search;
 
+        $screenings = ScreeningOffline::where(function ($query) use ($search) {
+            $query->where("full_name", "like", "%$search%");
+        })
+            ->where('health_check_result', true)
+            ->get();
 
-
+        return view('dashboard.kasir.screening_offline', compact('screenings', 'search'));
+    }
 }

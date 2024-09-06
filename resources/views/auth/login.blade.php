@@ -35,7 +35,7 @@
                             <a href="/forgot-password" class="mr-4 text-sm font-medium text-purple-blue-500">Forget
                                 password?</a>
                         </div>
-                        <x-form.primary-button>Sign In</x-form.primary-button>
+                        <x-form.primary-button type="submit">Sign In</x-form.primary-button>
                         <p class="text-sm leading-relaxed text-grey-900">Not registered yet? <a
                                 href="{{ route('register') }}" class="font-bold text-grey-700">Create an Account</a>
                         </p>

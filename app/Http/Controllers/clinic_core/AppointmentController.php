@@ -18,6 +18,18 @@ class AppointmentController extends Controller
         return view('dashboard.pasien.appointments.index', compact('appointments', 'doctors'));
     }
 
+    public function searchPasien(Request $request)
+    {
+        $search = $request->search;
+        $doctors = User::where('role', 'dokter')->get();
+        $appointments = Appointment::whereHas('user', function ($query) use ($search) {
+            $query->where("name", "like", "%$search%");
+        })
+            ->get();
+
+        return view('dashboard.pasien.appointments.index', compact('appointments', 'search', 'doctors'));
+    }
+
     public function create()
     {
         $doctors = User::where('role', 'dokter')->get();
@@ -42,6 +54,7 @@ class AppointmentController extends Controller
             'unscheduled_reason' => $request->unscheduled_reason,
             'status' => $request->status,
         ]);
+
 
         $doctors = User::where('role', 'dokter')->get();
 
@@ -112,5 +125,16 @@ class AppointmentController extends Controller
     public function doctorShow(Appointment $appointment)
     {
         return view('dashboard.dokter.appointments.appointments_show', compact('appointment'));
+    }
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        $appointments = Appointment::whereHas('user', function ($query) use ($search) {
+            $query->where("name", "like", "%$search%");
+        })
+            ->get();
+
+        return view('dashboard.dokter.appointments.appointments_index', compact('appointments', 'search'));
     }
 }

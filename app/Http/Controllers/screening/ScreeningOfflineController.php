@@ -145,4 +145,6 @@ class ScreeningOfflineController extends Controller
         $screening->save();
         return redirect()->route('paramedis.ScreeningHistory')->with('success', 'Hasil screening berhasil diperbarui.');
     }
+
+    // Mencari Pengguna
 }

@@ -3,7 +3,7 @@
         <h1>Create Appointment</h1>
         <form action="{{ route('pasien.appointments.store') }}" method="POST">
             @csrf
-            <x-alert />
+            <x-toast />
 
             <div>
                 <label for="user_id">User ID:</label>

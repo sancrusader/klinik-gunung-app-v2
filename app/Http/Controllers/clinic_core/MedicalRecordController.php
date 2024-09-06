@@ -41,6 +41,6 @@ class MedicalRecordController extends Controller
 
         $appointment->save();
 
-        return redirect()->route('dashboard.dokter.appointments.index')->with('success', 'Medical record updated and follow-up scheduled successfully.');
+        return redirect()->route('dokter.appointments.index')->with('success', 'Medical record updated and follow-up scheduled successfully.');
     }
 }

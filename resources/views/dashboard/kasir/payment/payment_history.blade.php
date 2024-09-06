@@ -8,7 +8,7 @@
                     <div class="mb-4">
                         <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Pembayaran</h1>
                     </div>
-                    <x-alert />
+                    <x-toast />
                     <div class="flex flex-col">
                         <div class="overflow-x-auto">
                             <div class="inline-block min-w-full align-middle">

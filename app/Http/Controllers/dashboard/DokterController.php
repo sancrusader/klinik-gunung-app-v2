@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\dashboard;
 
-use App\Http\Controllers\Controller;
-
 use Carbon\Carbon;
+
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Models\StaffSchedule;
+use App\Http\Controllers\Controller;
 
 class DokterController extends Controller
 {
 
     public function dashboard()
     {
-        return view('dashboard.dokter.welcome');
+
+        $appointments = Appointment::where('doctor_id', auth()->id())->get();
+        return view('dashboard.dokter.welcome', compact('appointments'));
     }
     public function shif()
     {

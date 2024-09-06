@@ -6,15 +6,27 @@ use App\Models\Topic;
 use App\Models\Comment;
 use App\Models\Reply;
 use Illuminate\Http\Request;
+use App\Models\User;
+
 
 class CommunityController extends Controller
 {
     // Menampilkan semua topik
-    public function index()
-    {
-        $topics = Topic::with('user')->latest()->get();
-        return view('community.index', compact('topics'));
+public function index()
+{
+    // Mengambil topik beserta user, comments, dan replies
+    $topics = Topic::with(['user', 'comments.replies'])->latest()->get();
+
+    // Menghitung jumlah total replies untuk setiap topik
+    foreach ($topics as $topic) {
+        $topic->reply_count = $topic->comments->sum(function ($comment) {
+            return $comment->replies->count();
+        });
     }
+
+    return view('community.index', compact('topics'));
+}
+
 
     // Membuat topik baru
     public function storeTopic(Request $request)
@@ -22,12 +34,15 @@ class CommunityController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+            $imagePath = $request->file('image') ? $request->file('image')->store('posts', 'public') : null;
 
         Topic::create([
             'title' => $request->title,
             'description' => $request->description,
             'user_id' => auth()->id(),
+            'image_path'
         ]);
 
         return redirect()->route('community.index')->with('success', 'Topik baru berhasil dibuat.');
@@ -36,6 +51,8 @@ class CommunityController extends Controller
     // Menambahkan komentar ke topik
     public function storeComment(Request $request, $topicId)
     {
+        // dd($request->all());
+
         $request->validate([
             'body' => 'required|string',
         ]);
@@ -69,6 +86,7 @@ class CommunityController extends Controller
     public function show($id)
     {
         $topic = Topic::with(['comments.replies', 'user'])->findOrFail($id);
+        
         return view('community.show', compact('topic'));
     }
     public function editTopic($id)

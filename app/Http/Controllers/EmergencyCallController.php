@@ -27,7 +27,7 @@ class EmergencyCallController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('pasien.welcome')->with('success', 'Panggilan darurat telah dikirim ke koordinator.');
+        return redirect()->route('emergency_calls.create')->with('success', 'An emergency call has been sent to the coordinator.');
     }
 
     public function index()

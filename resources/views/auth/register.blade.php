@@ -10,12 +10,10 @@
                             <p class="mb-4 text-grey-700">Create Your Account</p>
                             @csrf
                             <x-auth-alert />
-
                             {{-- Name --}}
                             <x-form.label for="name" id="Name" />
                             <x-form.input type="name" name="name" placeholder="Full Name" />
                             {{-- /Name --}}
-
                             {{-- Email --}}
                             <x-form.label for="email" id="Email" />
                             <x-form.input type="email" name="email" placeholder="Your Email" />

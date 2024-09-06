@@ -9,7 +9,7 @@
                     </div>
                 </div>
             </div>
-            <x-alert />
+            <x-toast />
             <div class="flex flex-col">
                 <div class="overflow-x-auto">
                     <div class="inline-block min-w-full align-middle">

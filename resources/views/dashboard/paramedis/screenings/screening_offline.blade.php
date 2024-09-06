@@ -9,9 +9,24 @@
                         <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Screening Offline
                         </h1>
                     </div>
-
-                    <x-alert />
-                    <div class="flex flex-col">
+                    <div
+                        class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 dark:divide-gray-700">
+                        <form class="lg:pr-3" action="{{ route('paramedis.search') }}" method="GET">
+                            <label for="users-search" class="sr-only">Search</label>
+                            <div class="relative mt-1 lg:w-64 xl:w-96">
+                                <input type="text" id="search" name="search"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                    placeholder="Search for users"> <br>
+                                <button type="submit"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Seacrh
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <br>
+                    <x-toast />
+                    <div class="flex
+                                    flex-col">
                         <div class="overflow-x-auto">
                             <div class="inline-block min-w-full align-middle">
                                 <div class="overflow-hidden shadow">
@@ -26,12 +41,15 @@
                                                     class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
                                                     Nama Lengkap
                                                 </th>
-                                                <th></th>
                                                 <th scope="col"
                                                     class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
-                                                    Aksi
+                                                    Status
                                                 </th>
-                                        <tbody>
+                                                <th scope="col"
+                                                    class="p-4 text-xs font-medium text-left text-gray-500 uppercase dark:text-gray-400">
+                                                    Aksi</th>
+                                        </thead>
+                                        <tbody id="#screening-results">
                                             @foreach ($screenings as $screening)
                                                 <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
                                                     <td
@@ -44,28 +62,34 @@
                                                     </td>
                                                     <td
                                                         class="p-4 text-base font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <td>
                                                         <form id=""
                                                             action="{{ route('paramedis.confirm', $screening->id) }}"
                                                             method="POST">
                                                             @csrf
-                                                            <select name="health_check_result" class="form-control"
+                                                            <select name="health_check_result"
+                                                                class="block p-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                                 required>
-                                                                <option value="" disabled selected>Pilih Status
+                                                                <option value="" disabled selected>Pilih
+                                                                    Status
                                                                 </option>
                                                                 <option value="sehat">Tidak Didampingi (Sehat)
                                                                 </option>
-                                                                <option value="butuh_pendamping">Butuh Pendamping
+                                                                <option value="butuh_pendamping">Butuh
+                                                                    Pendamping
                                                                 </option>
-                                                                <option value="butuh_dokter">Butuh Dokter</option>
+                                                                <option value="butuh_dokter">Butuh Dokter
+                                                                </option>
                                                             </select>
-                                                            <button type="button" data-modal-target="modal-confirm"
-                                                                data-modal-toggle="modal-confirm"
-                                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                                Confirm
-                                                            </button>
-                                                        </form>
                                                     </td>
+                                                    <td>
+                                                        <button type="button" data-modal-target="modal-confirm"
+                                                            data-modal-toggle="modal-confirm"
+                                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                            Konfirmasi
+                                                        </button>
+                                                    </td>
+                                                    </form>
+
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -118,5 +142,22 @@
             </div>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#search').on('keyup', function() {
+                var query = $(this).val();
+                $.ajax({
+                    url: "{{ route('paramedis.ScreeningOffline') }}",
+                    type: "GET",
+                    data: {
+                        'query': query
+                    },
+                    success: function(data) {
+                        $('#screening-results').html(data);
+                    }
+                });
+            });
+        });
+    </script>
 </x-dashboard.dashboard-layout>

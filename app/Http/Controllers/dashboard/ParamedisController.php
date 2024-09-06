@@ -100,11 +100,28 @@ class ParamedisController extends Controller
         return $path . $filename;
     }
 
-    public function ScreeningOffline()
+    public function ScreeningOffline(Request $request)
     {
-        $screenings = ScreeningOffline::whereNull('health_check_result')->paginate(10);
-        return view('dashboard.paramedis.screenings.screening_offline', compact('screenings'));
+        $query = $request->input('query');
+        $screeningsQuery = ScreeningOffline::whereNull('health_check_result');
+
+        if ($query) {
+            $screeningsQuery->where(function ($q) use ($query) {
+                $q->where('full_name', 'LIKE', "%{$query}%")
+                    ->orWhere('status', 'LIKE', "%{$query}%");
+            });
+        }
+
+        $screenings = $screeningsQuery->paginate(10);
+
+        if ($request->ajax()) {
+            return response()->json($screenings);
+        }
+
+        return view('dashboard.paramedis.screenings.screening_offline', compact('screenings', 'query'));
     }
+
+
 
     // Memperbarui hasil cek kesehatan
     public function updateHealthCheck(Request $request, $id)
@@ -146,5 +163,18 @@ class ParamedisController extends Controller
             ->get();
 
         return view('dashboard.paramedis.screenings.screening_history', compact('screenings'));
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        $screenings = ScreeningOffline::where(function ($query) use ($search) {
+            $query->where("full_name", "like", "%$search%")
+                ->orWhere("health_check_result", "like", "%$search%");
+        })
+            ->get();
+
+        return view('dashboard.paramedis.screenings.screening_offline', compact('screenings', 'search'));
     }
 }

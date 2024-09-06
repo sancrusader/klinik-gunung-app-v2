@@ -11,7 +11,7 @@
 <body>
     <h1>Konfirmasi Pembayaran</h1>
 
-    <x-alert />
+    <x-toast />
 
     <table border="1">
         <thead>

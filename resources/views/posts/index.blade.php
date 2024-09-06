@@ -1,39 +1,3 @@
-{{-- <a href="{{ route('posts.create') }}" class="btn btn-primary">Create New Post</a>
-
-@foreach ($posts as $post)
-    <div style="border-bottom: 1px solid #ddd; margin-bottom: 20px; padding-bottom: 20px;">
-        <h2>{{ $post->title }}</h2>
-        <p>{!! \Illuminate\Support\Str::limit($post->content, 100) !!}</p>
-
-        @if ($post->author_name)
-            <div class="author-info" style="margin-top: 10px;">
-                @if ($post->author_profile_picture)
-                    <img src="{{ Storage::url($post->author_profile_picture) }}" alt="Author Profile Picture"
-                        width="50" style="border-radius: 50%; vertical-align: middle;">
-                @endif
-                <p style="display: inline-block; vertical-align: middle;">Author: {{ $post->author_name }}</p>
-            </div>
-        @endif
-
-        @if ($post->tags)
-            <p>Tags: {{ implode(', ', $post->tags) }}</p>
-        @endif
-
-
-        <small>Posted {{ $post->created_at->diffForHumans() }}</small>
-
-        <div style="margin-top: 10px;">
-            <a href="{{ route('posts.show', $post) }}" class="btn btn-info">View</a>
-            <a href="{{ route('posts.edit', $post) }}" class="btn btn-warning">Edit</a>
-
-            <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display: inline-block;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
-        </div>
-    </div>
-@endforeach --}}
 <x-layout>
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <div class="pb-12 pt-32 md:pb-20 md:pt-40">

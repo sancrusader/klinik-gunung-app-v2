@@ -3,7 +3,6 @@
         <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">Our Services
         </h2>
         <figure class="max-w-screen-md mx-auto">
-
             <svg class="h-12 mx-auto mb-3 text-gray-400 dark:text-gray-600" viewBox="0 0 24 27" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -17,7 +16,7 @@
             </blockquote>
             <figcaption class="flex items-center justify-center mt-6 space-x-3">
                 <img class="w-6 h-6 rounded-full"
-                    src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gouch.png"
+                    src=""
                     alt="profile picture">
                 <div class="flex items-center divide-x-2 divide-gray-500 dark:divide-gray-700">
                     <div class="pr-3 font-medium text-gray-900 dark:text-white">Micheal Gough</div>
