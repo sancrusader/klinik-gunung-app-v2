@@ -55,9 +55,9 @@
         </tbody>
         </table>
     </x-table-header>
-    {{-- Modal Delete --}}
-    <x-modal.delete id="delete-appointment" />
-    {{-- Modal Membuat Appointments Baru --}}
+
+    <x-modal.delete id="delete-appointment" content="Delete Appointments?" />
+
     <div class="fixed left-0 right-0 z-50 items-center justify-center hidden overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full"
         id="create-appoinments">
         <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
@@ -89,6 +89,7 @@
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="doctor_id"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Doctor</label>
+
                                 <select name="doctor_id" id="doctor_id"
                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="Bonnie" required>
@@ -100,13 +101,15 @@
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="scheduled_at"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">With Schedule (Optional)</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">With Schedule
+                                    (Optional)</label>
                                 <input type="datetime-local" name="scheduled_at" id="scheduled_at"
                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="unscheduled_reason"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Without Schedule (Optional)</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Without
+                                    Schedule (Optional)</label>
                                 <input type="text" name="unscheduled_reason" id="unscheduled_reason"
                                     class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="Masukan Keluhan">

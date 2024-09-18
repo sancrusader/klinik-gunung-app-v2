@@ -2,30 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Reply;
 use App\Models\Topic;
 use App\Models\Comment;
-use App\Models\Reply;
 use Illuminate\Http\Request;
-use App\Models\User;
 
 
 class CommunityController extends Controller
 {
     // Menampilkan semua topik
-public function index()
-{
-    // Mengambil topik beserta user, comments, dan replies
-    $topics = Topic::with(['user', 'comments.replies'])->latest()->get();
+    public function index()
+    {
+        // Mengambil topik beserta user, comments, dan replies
+        $topics = Topic::with(['user', 'comments.replies'])->latest()->get();
 
-    // Menghitung jumlah total replies untuk setiap topik
-    foreach ($topics as $topic) {
-        $topic->reply_count = $topic->comments->sum(function ($comment) {
-            return $comment->replies->count();
-        });
+        // Menghitung jumlah total replies untuk setiap topik
+        foreach ($topics as $topic) {
+            $topic->reply_count = $topic->comments->sum(function ($comment) {
+                return $comment->replies->count();
+            });
+        }
+
+        return view('community.index', compact('topics'));
     }
-
-    return view('community.index', compact('topics'));
-}
 
 
     // Membuat topik baru
@@ -45,14 +46,13 @@ public function index()
             'image_path'
         ]);
 
-        return redirect()->route('community.index')->with('success', 'Topik baru berhasil dibuat.');
+        return redirect()->route('community.index')->with('success', 'Postingan Berhasil Di Unggah');
     }
 
     // Menambahkan komentar ke topik
     public function storeComment(Request $request, $topicId)
     {
-        // dd($request->all());
-
+// dd($request->all(), $topicId);
         $request->validate([
             'body' => 'required|string',
         ]);
@@ -164,5 +164,21 @@ public function index()
 
         return redirect()->back()->with('success', 'Balasan berhasil dihapus.');
     }
+
+
+    // Dalam controller Anda
+public function like(Topic $post)
+{
+    $post->like(); // Menambahkan like
+
+    return redirect()->back()->with('success', 'Post berhasil di-like');
+}
+
+public function unlike(Topic $post)
+{
+    $post->unlike(); // Menghapus like
+
+    return redirect()->back()->with('success', 'Like post berhasil dibatalkan');
+}
 
 }

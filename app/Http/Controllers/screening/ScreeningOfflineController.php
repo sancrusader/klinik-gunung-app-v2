@@ -5,14 +5,22 @@ namespace App\Http\Controllers\screening;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ScreeningOffline;
+use App\Events\NewScreeningCreated;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use App\Http\Requests\ScreeningRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Notifications\NewScreeningNotification;
-use App\Events\NewScreeningCreated;
 
 class ScreeningOfflineController extends Controller
 {
+
+    public function index()
+    {
+        $screenings = ScreeningOffline::whereNull('health_check_result')->get();
+        return view('screening_offlines.index', compact('screenings'));
+    }
     // Menampilkan form pendaftaran screening
     public function create()
     {
@@ -20,43 +28,31 @@ class ScreeningOfflineController extends Controller
     }
 
     // Menyimpan data screening baru
-    public function store(Request $request)
+    public function store(ScreeningRequest $request)
     {
-        $request->validate([
-            'full_name' => 'required|string|max:255',
-        ]);
+        $userId = Auth::id();
 
-        // Get the last queue number and increment it
-        $lastQueueNumber = ScreeningOffline::max('queue_number');
-        $queueNumber = $lastQueueNumber ? $lastQueueNumber + 1 : 1;
+        // Dapatkan nomor antrian terbaru
+        $queueNumber = ScreeningOffline::generateQueueNumber();
 
-        $userId = auth()->check() ? auth()->id() : null;
-
+        // Simpan data screening ke dalam database
         $screeningOffline = ScreeningOffline::create([
             'queue_number' => $queueNumber,
             'full_name' => $request->full_name,
             'user_id' => $userId,
+            'age' => $request->age,
+            'gender' => $request->gender,
+            'contact_number' => $request->contact_number,
+            'planned_hiking_date' => $request->planned_hiking_date,
+            'previous_hikes_count' => $request->previous_hikes_count,
         ]);
 
+        // Trigger event untuk notifikasi
         event(new NewScreeningCreated($screeningOffline));
 
-        // Ambil semua user dengan role 'paramedis'
-        $paramedics = User::where('role', 'paramedis')->get();
-
-        // Kirim notifikasi ke masing-masing paramedis
-        foreach ($paramedics as $paramedic) {
-            $paramedic->notify(new NewScreeningNotification($screeningOffline));
-        }
-
-        return redirect()->route('screeningOffline.show')->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
+        return back()->with('success', 'Pendaftaran berhasil, nomor antrian: ' . $queueNumber);
     }
 
-    // Menampilkan daftar screening yang belum diperiksa oleh paramedis
-    public function index()
-    {
-        $screenings = ScreeningOffline::whereNull('health_check_result')->get();
-        return view('screening_offlines.index', compact('screenings'));
-    }
 
     // Menampilkan form pemeriksaan kesehatan
     public function checkHealth($id)
@@ -145,6 +141,4 @@ class ScreeningOfflineController extends Controller
         $screening->save();
         return redirect()->route('paramedis.ScreeningHistory')->with('success', 'Hasil screening berhasil diperbarui.');
     }
-
-    // Mencari Pengguna
 }

@@ -13,11 +13,6 @@
                             Accept
                         </a>
                     </x-td>
-                        {{-- <x-td><a class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                                href="{{ route('emergency_calls.updateStatus', [$call->id, 'resolved']) }}">
-                                Resolved
-                            </a>
-                        </x-td> --}}
                         <x-td>
                             <a class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                 href="{{ route('emergency_calls.updateStatus', [$call->id, 'rejected']) }}">

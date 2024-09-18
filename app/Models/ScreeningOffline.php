@@ -20,6 +20,28 @@ class ScreeningOffline extends Model
         'payment_status',
         'certificate_issued',
         'certificate_path',
-        'amount_paid'
+        'amount_paid',
+        'age',
+        'gender',
+        'contact_number',
+        'planned_hiking_date',
+        'previous_hikes_count'
+        
     ];
+
+    public static function generateQueueNumber()
+    {
+        $lastQueueNumber = self::max('queue_number');
+        return $lastQueueNumber ? $lastQueueNumber + 1 : 1;
+    }
+
+    public function user()
+{
+    return $this->belongsTo(User::class, 'user_id'); // Asumsikan ada user_id di ScreeningOffline
+}
+
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
 }

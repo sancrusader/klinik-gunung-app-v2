@@ -121,6 +121,12 @@ class ParamedisController extends Controller
         return view('dashboard.paramedis.screenings.screening_offline', compact('screenings', 'query'));
     }
 
+    public function DetailScreeningOffline($id)
+    {
+        $screening = ScreeningOffline::with('user')->findOrFail($id);
+
+        return view('dashboard.paramedis.screenings.screening_offline_detail', compact('screening'));
+    }
 
 
     // Memperbarui hasil cek kesehatan
@@ -169,11 +175,15 @@ class ParamedisController extends Controller
     {
         $search = $request->search;
 
-        $screenings = ScreeningOffline::where(function ($query) use ($search) {
-            $query->where("full_name", "like", "%$search%")
-                ->orWhere("health_check_result", "like", "%$search%");
-        })
-            ->get();
+        $screenings = ScreeningOffline::query()
+        ->whereAny(['full_name', 'health_check_result'], 'like', "%$search%")
+        ->get();
+
+        // $screenings = ScreeningOffline::where(function ($query) use ($search) {
+        //     $query->where("full_name", "like", "%$search%")
+        //         ->orWhere("health_check_result", "like", "%$search%");
+        // })
+        //     ->get();
 
         return view('dashboard.paramedis.screenings.screening_offline', compact('screenings', 'search'));
     }

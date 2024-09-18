@@ -2,14 +2,13 @@
     <x-table-header action="{{ route('pasien.search') }}" placeholder="Search by name" name="Screening Offline">
         <x-toast />
         {{-- Table Header --}}
-        <x-th :headers="['Queue Number', 'Full Name', 'Status', 'Payment Status']" />
+        <x-th :headers="['Full Name', 'Status', 'Payment Status']" />
         {{-- Button Modal  --}}
         <x-modal.button id="create-screening-offline" buttonName="New Screening Offline" />
         {{-- Table Body --}}
         <tbody>
             @foreach ($screenings as $screening)
                 <tr>
-                    <x-td>{{ $screening->queue_number }}</x-td>
                     <x-td>{{ $screening->full_name }}</x-td>
                     <x-td>
                         @if ($screening->payment_status == 1)
@@ -42,6 +41,8 @@
                 </tr>
             @endforeach
         </tbody>
+
+        {{-- /Table Body --}}
     </x-table-header>
 
     {{-- Modal Membuat Screening --}}
@@ -71,15 +72,44 @@
                     <form class="space-y-4" action="{{ route('screening-offline.store') }}" method="POST">
                         @csrf
                         <div>
-                            <label for="full_name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full
-                                Name</label>
-                            <input type="full_name" name="full_name" id="full_name"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                                value="{{ Auth::user()->name }}" required />
-                        </div>
-                        <button type="submit"
-                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
+                            <div class="relative z-0 w-full mb-5 group">
+                                <x-form.input-screening type="text" name="full_name" id="full_name" placeholder=" "
+                                    for="full_name">Full Name
+                                </x-form.input-screening>
+                            </div>
+                            <div class="relative z-0 w-full mb-5 group">
+                                <x-form.input-screening type="number" name="age" id="age" placeholder=" "
+                                    for="age">Age
+                                </x-form.input-screening>
+                            </div>
+                            <div class="relative z-0 w-full mb-5 group">
+                                <select name="gender" id=""
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer mb-5">
+                                    <option value="" selected disabled>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="relative z-0 w-full mb-5 group">
+                                <x-form.input-screening type="tel" name="contact_number" id="contact_number"
+                                    placeholder=" " for="contact_number">Contact Number
+                                </x-form.input-screening>
+                            </div>
+                            <div class="relative z-0 w-full mb-5 group">
+                                <x-form.input-screening type="date" name="planned_hiking_date"
+                                    id="planned_hiking_date" placeholder=" " for="planned_hiking_date">Planed Hiking
+                                    Date
+                                </x-form.input-screening>
+                            </div>
+                            <div class="relative z-0 w-full mb-5 group">
+                                <x-form.input-screening type="number" name="previous_hikes_count"
+                                    id="previous_hikes_count" placeholder=" " for="previous_hikes_count">Previous Hikers
+                                    Count (above 2,000 meters)
+                                </x-form.input-screening>
+                            </div>
+                            <button type="submit"
+                                class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Create</button>
                     </form>
                 </div>
             </div>

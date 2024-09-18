@@ -4,6 +4,6 @@
         Klinik Gunung
     </h5>
     <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">
-        Selamat datang {{ Auth::user()->name }}
+        Welcome {{ Auth::user()->name }}
     </p>
 </div>

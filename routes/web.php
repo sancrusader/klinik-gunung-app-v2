@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -25,9 +26,10 @@ use App\Http\Controllers\clinic_core\MedicalRecordController;
 use App\Http\Controllers\screening\ScreeningOfflineController;
 use App\Http\Controllers\dashboard\KoordinatorPenyelamatController;
 
+
 // Home Page
 Route::get('/', function () {
-    return view('welcome');
+    return view('app');
 })->name('/');
 
 // About Page
@@ -176,6 +178,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/paramedis/shif', [ParamedisController::class, 'shifParamedis'])->name('shift.paramedis');
         Route::get('/paramedis/screening/history', [ParamedisController::class, 'history'])->name('paramedis.ScreeningHistory');
         Route::get('paramedis/search', [ParamedisController::class, 'search'])->name('paramedis.search');
+
+        // Screening Offline Detail Dan Mengisi Quisioner
+        Route::get('paramedis/screening/offline/{id}/detail', [ParamedisController::class, 'DetailScreeningOffline'])->name('paramedis.screeningOffline.Detail');
     });
     // !End Role Paramedis
 
@@ -197,6 +202,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/manajer/screening-activity', [ManajerController::class, 'ScreeningAcitivity'])->name('manajer.screeningActivity');
             Route::get('manajer/report/pdf', [ReportController::class, 'generatePDF'])->name('report.pdf');
             Route::get('manajer/report', [ReportController::class, 'index'])->name('report.index');
+
         }
     );
     // !End Role Manajer
@@ -222,6 +228,7 @@ Route::middleware(['auth'])->group(function () {
 
     // !End role kasir
     // Routing Edit Profile
+
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.update.photo');
@@ -248,16 +255,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/screening-offline/{id}/edit', [ScreeningOfflineController::class, 'edit'])->name('screeningOffline.edit');
     Route::put('/screening-offline/{id}', [ScreeningOfflineController::class, 'update'])->name('screeningOffline.update');
     Route::get('pasien/screening/offline', [ScreeningOfflineController::class, 'show'])->name('screeningOffline.show');
-    
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
     Route::post('/community/topic', [CommunityController::class, 'storeTopic'])->name('community.storeTopic');
     Route::get('/community/topic/{id}', [CommunityController::class, 'show'])->name('community.show');
-    Route::post('/community/topic/{id}/comment', [CommunityController::class, 'storeComment'])->name('community.storeComment');
+    Route::post('/community/topic/{topicId}/comment', [CommunityController::class, 'storeComment'])->name('community.storeComment');
     Route::post('/community/comment/{id}/reply', [CommunityController::class, 'storeReply'])->name('community.storeReply');
     Route::get('/community/topic/delete/{id}', [CommunityController::class, 'deleteTopic'])->name('community.delete');
     Route::get('/community/new-post', function() {
         return view('community.create');
-    });
+    })->name('community.create');
 });
 
 // Notifikasi
@@ -268,7 +274,6 @@ Route::get('/notifications/mark-all-as-read', function () {
 // !End Notifikasi
 
 Route::get('screeningOfflines/{screening}', [ScreeningOfflineController::class, 'show'])->name('screeningOfflines.show');
-
 // Emergency calls
 Route::middleware(['auth'])->group(function () {
 
@@ -279,7 +284,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('emergency_calls/{id}/status/{status}', [EmergencyCallController::class, 'updateStatus'])->name('emergency_calls.updateStatus');
     Route::get('emergency_calls/show', [EmergencyCallController::class, 'show'])->name('emergency_calls.show');
 
-// Cart Productc
+    // Cart Productc
     Route::get('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.index');
     Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
@@ -288,7 +293,7 @@ Route::middleware(['auth'])->group(function () {
 
 // !End Emergency calls
 Route::get('/screening/offline', [ScreeningOfflineController::class, 'create'])->name('screening-offline.create');
-Route::post('/screening-offline', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
+Route::post('/screening/offline/store', [ScreeningOfflineController::class, 'store'])->name('screening-offline.store');
 
 
 //  E-Commerce
@@ -303,10 +308,10 @@ Route::get('admin/products/{product}/edit', [ProductController::class, 'edit'])-
 Route::post('admin/products/remove/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 Route::post('admin/products/update', [ProductController::class, 'update'])->name('products.update');
 
-
 // Menambahkan Ke Cart
-// Search
-
 Route::get('/kasir/search', [KasirController::class, 'search'])->name('kasir.search');
 Route::get('/dokter/search', [AppointmentController::class, 'search'])->name('dokter.search');
 Route::get('/pasien/search', [AppointmentController::class, 'searchPasien'])->name('pasien.search');
+
+Route::post('/like-post/{id}',[CommunityController::class,'likePost'])->name('like.post');
+Route::post('/unlike-post/{id}',[CommunityController::class,'unlikePost'])->name('unlike.post');

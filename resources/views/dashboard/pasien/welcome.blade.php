@@ -44,4 +44,5 @@
             </div>
         </div>
     </x-card.card>
+    <x-dashboard-footer />
 </x-dashboard-layout>

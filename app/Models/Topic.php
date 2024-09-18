@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Conner\Likeable\Likeable;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +10,7 @@ use App\Models\User;
 
 class Topic extends Model
 {
-    use HasFactory;
+    use HasFactory, Likeable;
 
     protected $fillable = ['title', 'description', 'user_id', 'image_path'];
 
